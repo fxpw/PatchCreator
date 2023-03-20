@@ -1,5 +1,5 @@
 CC = g++
-CXXFLAGS = -c
+CXXFLAGS = -c -lstorm -lz -lbz2
 
 OUT_FILE = FallafelHelper
 

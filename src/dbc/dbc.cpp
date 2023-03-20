@@ -36,7 +36,6 @@ bool DBCFileLoader::Load(char const *filename){
 
     if(!pf)
         return false;
-    // uint32 header;
 
     if(fread(&header, 4, 1, pf) != 1) // первые 4 это хедер
         return false;
