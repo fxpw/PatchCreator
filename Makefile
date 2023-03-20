@@ -1,19 +1,50 @@
-CC = g++
-CXXFLAGS = -c -lstorm -lz -lbz2
+CXX      := g++
+CXXFLAGS := -std=c++17 -Wall -Wextra #-Werror -std=c++2a
+LDFLAGS  := -L/usr/lib -lstorm -lz #-lbzip2
+BUILD    := ./build
+OBJ_DIR  := $(BUILD)/objects
+APP_DIR  := $(BUILD)/apps
+TARGET   := FH
+INCLUDE  := -Iinclude/
+SRC      :=                      \
+   $(wildcard src/*/*.cpp)  \
+   $(wildcard src/*.cpp)         \
 
-OUT_FILE = FallafelHelper
+OBJECTS  := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
+DEPENDENCIES \
+         := $(OBJECTS:.o=.d)
 
-OBJECTS = dbc.o main.o
-SRC = src
-INCLUDES = -I$(SRC)/
+all: build $(APP_DIR)/$(TARGET)
 
-$(OUT_FILE): $(OBJECTS)
-		$(CC) $(OBJECTS) -o $(OUT_FILE)
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -MMD -o $@
 
-dbc.o: $(SRC)/dbc/dbc.cpp $(SRC)/dbc/dbc.hpp
-		$(CC) $(CXXFLAGS) $(INCLUDES) $(SRC)/dbc/dbc.cpp
-main.o: $(SRC)/main/main.cpp $(SRC)/common/common.hpp $(SRC)/dbc/dbc.hpp $(SRC)/structs/spell.hpp
-		$(CC) $(CXXFLAGS) $(INCLUDES) $(SRC)/main/main.cpp
+$(APP_DIR)/$(TARGET): $(OBJECTS)
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -o $(APP_DIR)/$(TARGET) $^ $(LDFLAGS)
 
-clean:
-		rm -rf *.o $(OUT_FILE)
+-include $(DEPENDENCIES)
+
+.PHONY: all build clear debug release info
+
+build:
+	@mkdir -p $(APP_DIR)
+	@mkdir -p $(OBJ_DIR)
+
+debug: CXXFLAGS += -DDEBUG -g
+debug: all
+
+release: CXXFLAGS += -O2
+release: all
+
+clear:
+	-@rm -rvf $(OBJ_DIR)/*
+	-@rm -rvf $(APP_DIR)/*
+
+info:
+	@echo "[*] Application dir: ${APP_DIR}     "
+	@echo "[*] Object dir:      ${OBJ_DIR}     "
+	@echo "[*] Sources:         ${SRC}         "
+	@echo "[*] Objects:         ${OBJECTS}     "
+	@echo "[*] Dependencies:    ${DEPENDENCIES}"

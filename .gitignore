@@ -3,8 +3,9 @@
 /dbc.o
 /main.o
 FallafelHelper
-original
+original/*
 hlam.cpp
 /ItemDisplayInfo.dbc
 /SpellItemEnchantment.dbc
-/buildedDBC
+buildedDBC/*
+/build/*

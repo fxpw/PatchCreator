@@ -1,16 +1,17 @@
 #include <iostream>
 #include <cstring>
 #include <stdio.h>
-
 #include "common/common.hpp"
 #include "dbc/dbc.hpp"
 #include "structs/spell.hpp"
 #include <map>
 #include <nlohmann/json.hpp>
 #include <fstream>
-
+#include <StormLib.h>
 #include <string>
 #include <stdexcept>
+#include "mpq/mpq.hpp"
+
 inline unsigned int stringToUInt(const std::string& s)
 {
     unsigned long lresult = stoul(s, 0, 10);
@@ -38,7 +39,7 @@ bool ChangeSpellDBC();
 bool ChangeCreatureDisplayInfoDBC();
 bool ChangeItemDisplayInfoDBC();
 bool ChangeSpellItemEnchantmentDBC();
-
+bool CreateMPQ();
 bool parseJsons();
 
 int main(){
@@ -49,6 +50,7 @@ int main(){
     ChangeCreatureDisplayInfoDBC();
     ChangeItemDisplayInfoDBC();
     ChangeSpellItemEnchantmentDBC();
+    CreateMPQ();
     #ifdef WIN32
         std::cout << "\n\nPlease press Enter to exit...";
         getchar();
@@ -117,9 +119,9 @@ bool ChangeSpellDBC(){
     fwrite(&DBCSpell.stringSize,4,1,npf);
 
 
-    for (int i = 0; i < DBCSpell.recordCount; i++){
+    for (uint32 i = 0; i < DBCSpell.recordCount; i++){
         auto record = DBCSpell.getRecord(i);
-        int spellid = record.getInt32(0);
+        // int spellid = record.getInt32(0);
         const char* spellNameGetet = record.getString(136);
         std::string spellName(spellNameGetet);
         uint32 spellVisualID = record.getUInt32(131);
@@ -164,7 +166,7 @@ bool ChangeItemDisplayInfoDBC(){
         std::cout << "./original/ItemDisplayInfo.dbc" << " - Opened successful." << std::endl << "./original/ItemDisplayInfo.dbc" << " - fields: "
         << DBCItemDisplayInfo.getNumFields() << ", rows: " << DBCItemDisplayInfo.getNumRows() << std::endl;
     }
-    for (int i = 0; i < DBCItemDisplayInfo.recordCount; i++){
+    for (uint32 i = 0; i < DBCItemDisplayInfo.recordCount; i++){
         auto record = DBCItemDisplayInfo.getRecord(i);
         // int spellid = record.getInt32(0);
         // const char* spellNameGetet = record.getString(136);
@@ -210,7 +212,7 @@ bool ChangeSpellItemEnchantmentDBC(){
         std::cout << "./original/SpellItemEnchantment.dbc" << " - Opened successful." << std::endl << "./original/SpellItemEnchantment.dbc" << " - fields: "
         << DBCSpellItemEnchantment.getNumFields() << ", rows: " << DBCSpellItemEnchantment.getNumRows() << std::endl;
     }
-    for (int i = 0; i < DBCSpellItemEnchantment.recordCount; i++){
+    for (uint32 i = 0; i < DBCSpellItemEnchantment.recordCount; i++){
         auto record = DBCSpellItemEnchantment.getRecord(i);
         // int spellid = record.getInt32(0);
         // const char* spellNameGetet = record.getString(136);
@@ -244,3 +246,8 @@ bool ChangeSpellItemEnchantmentDBC(){
     std::cout << "*****************************************************************************\n\n\n";
     return true;
 }
+
+bool CreateMPQ(){
+    FileStream_CreateFile("da.mpq",1);
+    return true;
+};
