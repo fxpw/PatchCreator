@@ -2,9 +2,9 @@
 #include <cstring>
 #include <stdio.h>
 
-#include "common/common.h"
-#include "dbc/dbc.h"
-#include "structs/spell.h"
+#include "common/common.hpp"
+#include "dbc/dbc.hpp"
+#include "structs/spell.hpp"
 #include <map>
 #include <nlohmann/json.hpp>
 #include <fstream>

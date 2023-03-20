@@ -10,9 +10,9 @@ INCLUDES = -I$(SRC)/
 $(OUT_FILE): $(OBJECTS)
 		$(CC) $(OBJECTS) -o $(OUT_FILE)
 
-dbc.o: $(SRC)/dbc/dbc.cpp $(SRC)/dbc/dbc.h
+dbc.o: $(SRC)/dbc/dbc.cpp $(SRC)/dbc/dbc.hpp
 		$(CC) $(CXXFLAGS) $(INCLUDES) $(SRC)/dbc/dbc.cpp
-main.o: $(SRC)/main/main.cpp $(SRC)/common/common.h $(SRC)/dbc/dbc.h $(SRC)/structs/spell.h
+main.o: $(SRC)/main/main.cpp $(SRC)/common/common.hpp $(SRC)/dbc/dbc.hpp $(SRC)/structs/spell.hpp
 		$(CC) $(CXXFLAGS) $(INCLUDES) $(SRC)/main/main.cpp
 
 clean:

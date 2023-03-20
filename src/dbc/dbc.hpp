@@ -22,7 +22,7 @@
 
 #include <cassert>
 #include <cstring>
-#include "common/common.h"
+#include "common/common.hpp"
 
 #define WDBC_HEADER     0x43424457
 

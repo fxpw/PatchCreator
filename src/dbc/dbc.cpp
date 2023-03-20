@@ -18,23 +18,20 @@
  */
 
 #include <cstdio>
-#include "dbc/dbc.h"
+#include "dbc/dbc.hpp"
 #include <iostream>
 
-DBCFileLoader::DBCFileLoader()
-{
+DBCFileLoader::DBCFileLoader(){
     data = NULL;
     stringTable = NULL;
 }
 
-DBCFileLoader::~DBCFileLoader()
-{
+DBCFileLoader::~DBCFileLoader(){
     if(data)
        delete [] data;
 }
 
-bool DBCFileLoader::Load(char const *filename)
-{
+bool DBCFileLoader::Load(char const *filename){
     FILE* pf = fopen(filename, "rb");
 
     if(!pf)
@@ -76,8 +73,7 @@ bool DBCFileLoader::Load(char const *filename)
     return true;
 }
 
-DBCFileLoader::Record DBCFileLoader::getRecord(size_t id)
-{
+DBCFileLoader::Record DBCFileLoader::getRecord(size_t id){
     assert(data);
     return Record(*this, data + id * recordSize);
 }
