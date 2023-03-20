@@ -35,7 +35,7 @@ DBCFileLoader::~DBCFileLoader()
 
 bool DBCFileLoader::Load(char const *filename)
 {
-    FILE* pf = fopen("Spell_Copy.dbc", "rb");
+    FILE* pf = fopen(filename, "rb");
 
     if(!pf)
         return false;

@@ -474,6 +474,7 @@ DBCFileLoader DBCSpell;
 
 bool check_dbc();
 bool change_dbc();
+bool parseJsons();
 
 int main(){
     // std::cout << "*****************************************************************************\n";
@@ -487,20 +488,7 @@ int main(){
 
 
     DBCSpell.Load(SPELL_DBC);
-    std::ifstream f("visualChange.json");
-    json data = json::parse(f);
-
-    for (json::iterator it = data.begin(); it != data.end(); ++it) {
-        std::cout << it.key() << " " <<it.value() << '\n';
-        visualChange[stoui(it.key())] = it.value();
-    }
-    std::ifstream f2("spellIdToVisual.json");
-    json data2 = json::parse(f2);
-
-    for (json::iterator it = data2.begin(); it != data2.end(); ++it) {
-        std::cout << it.key() << " " <<it.value() << '\n';
-        spellIdToVisual[stoui(it.key())] = it.value();
-    }
+    parseJsons();
     
     if(check_dbc()){
         std::cout << "Ready. DBCs converted.\n";
@@ -524,8 +512,6 @@ bool check_dbc(){
         std::cout << SPELL_DBC << " - Opened successful." << std::endl << SPELL_DBC << " - fields: "
         << DBCSpell.getNumFields() << ", rows: " << DBCSpell.getNumRows() << std::endl;
     }
-
-
     if(DBCSpell.getNumFields() != SPELL_DBC_COLUMN_NUMS){
         std::cout << SPELL_DBC << " - ERROR: Column numbers do not match with the supported DBC format." << std::endl;
         return false;
@@ -533,8 +519,23 @@ bool check_dbc(){
     std::cout << SPELL_DBC << " - DBC format: OK." << "\n\n";
     return true;
 }
+bool parseJsons(){
+    std::ifstream f("visualChange.json");
+    json data = json::parse(f);
 
+    for (json::iterator it = data.begin(); it != data.end(); ++it) {
+        std::cout << it.key() << " " <<it.value() << '\n';
+        visualChange[stoui(it.key())] = it.value();
+    }
+    std::ifstream f2("spellIdToVisual.json");
+    json data2 = json::parse(f2);
 
+    for (json::iterator it = data2.begin(); it != data2.end(); ++it) {
+        std::cout << it.key() << " " <<it.value() << '\n';
+        spellIdToVisual[stoui(it.key())] = it.value();
+    }
+    return true;
+}
 bool change_dbc(){
 
     FILE* npf = fopen("Spell.dbc","wb");

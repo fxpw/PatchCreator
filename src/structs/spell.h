@@ -20,7 +20,7 @@
 #ifndef __SPEL_H__
 #define __SPEL_H__
 
-char const *SPELL_DBC = "Spell.dbc";
+char const *SPELL_DBC = "./original/Spell.dbc";
 char const *SPELL_SQL = "Spell_dbc.sql";
 char const *SPELL_TABLE = "dbc_spell";
 
