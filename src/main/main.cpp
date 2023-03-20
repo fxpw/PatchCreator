@@ -61,7 +61,7 @@ int main(){
 
 bool parseJsons(){
     /////////////////////
-    std::ifstream f1("./jsons/Spell.dbc.json");
+    std::ifstream f1("./jsons/Spell.dbc.parser.json");
     json data1 = json::parse(f1);
     for (json::iterator it = data1.begin(); it != data1.end(); ++it) {
         // std::cout << "Spell.dbc add" << it.key() << " " <<it.value() << '\n';
@@ -121,15 +121,15 @@ bool ChangeSpellDBC(){
 
     for (uint32 i = 0; i < DBCSpell.recordCount; i++){
         auto record = DBCSpell.getRecord(i);
-        // int spellid = record.getInt32(0);
+        int spellid = record.getInt32(0);
         const char* spellNameGetet = record.getString(136);
         std::string spellName(spellNameGetet);
         uint32 spellVisualID = record.getUInt32(131);
 
-        if (SpellChange.count(spellVisualID)){
+        if (SpellChange.count(spellid)){
             // std::cout<< "spellid->("<< spellid <<") spellname->("<< spellName <<") SpellChange->("<< spellVisualID<<") changed SpellChange to " << SpellChange[spellVisualID]<< std::endl;
-            // std::cout<< "{"<<SpellChange << "," << SpellChange[SpellChange] << "} changed to 0" << std::endl;
-            record.setUInt32(131,SpellChange[spellVisualID]);
+            std::cout<< "spell id- > "<<spellid << "  spell visual -> " << spellVisualID << " changed to "<< SpellChange[spellid] << std::endl;
+            record.setUInt32(131,SpellChange[spellid]);
         }
     }   
 
@@ -248,6 +248,37 @@ bool ChangeSpellItemEnchantmentDBC(){
 }
 
 bool CreateMPQ(){
-    FileStream_CreateFile("da.mpq",1);
+    HANDLE a;
+    // PSFILE_CREATE_MPQ nf;
+    // nf->cbSize = sizeof(SFILE_CREATE_MPQ);
+    // nf->dwFileFlags1 = MPQ_FILE_DEFAULT_INTERNAL;
+    // nf->dwFileFlags2 = MPQ_FILE_DEFAULT_INTERNAL;
+    // nf->dwFileFlags3 = MPQ_FILE_DEFAULT_INTERNAL;
+
+    // dwMpqVersion	Version for the newly created MPQ. 0 = version 1.0, 1 = version 2.0, 2 = version 3.0, 3 = version 4.0.
+    // pvUserData and cbUserData	Reserved. Do not use.
+    // dwStreamFlags	Stream flags for the new stream. Use one of STREAM_PROVIDER_XXX values and one of BASE_PROVIDER_XXX flags.
+    // dwFileFlags1	MPQ file flags for the (listfile). Set this to 0 if you dont want to have listfile.
+    // dwFileFlags2	MPQ file flags for the (attributes). Set this to 0 if you dont want to have attributes file.
+    // dwFileFlags3	MPQ file flags for the (signature). A value of MPQ_FILE_EXISTS causes the archive to be signed by weak signature.
+    // dwAttrFlags	Combination of MPQ_ATTRIBUTE_XXX flags. Value of 0 suppresses creation of (attributes).
+    // dwSectorSize	Sector size for the compressed files. Must be a power of two.
+    // dwRawChunkSize	Size of raw data chunk. Used only if the MPQ is of version 4.0. Each raw chunk is followed by a MD5 hash.
+    // dwMaxFileCount	Maximum number of files that can be stored in the new MPQ.
+    std::cout <<"Start create MPQ"<< std::endl;
+    SFileCreateArchive("patch-ruRU-x.mpq",MPQ_CREATE_ATTRIBUTES + MPQ_CREATE_ARCHIVE_V2,0x000000010,&a);
+    // SFileOpenArchive("patch-ruRU-x.mpq",0,STREAM_FLAG_WRITE_SHARE,&a);
+    SFileSetLocale(0);
+    // SFileSignArchive(a,SIGNATURE_TYPE_WEAK);
+    
+    SFileAddFileEx(a,"./buildedDBC/Spell.dbc","DBFilesClient/Spell.dbc",MPQ_FILE_COMPRESS+MPQ_FILE_REPLACEEXISTING,MPQ_COMPRESSION_ZLIB,MPQ_COMPRESSION_NEXT_SAME);
+    std::cout <<"added Spell.dbc"<< std::endl;
+    SFileAddFileEx(a,"./buildedDBC/ItemDisplayInfo.dbc","DBFilesClient/ItemDisplayInfo.dbc",MPQ_FILE_COMPRESS+MPQ_FILE_REPLACEEXISTING,MPQ_COMPRESSION_ZLIB,MPQ_COMPRESSION_NEXT_SAME);
+    std::cout <<"added ItemDisplayInfo.dbc"<< std::endl;
+    SFileAddFileEx(a,"./buildedDBC/SpellItemEnchantment.dbc","DBFilesClient/SpellItemEnchantment.dbc",MPQ_FILE_COMPRESS+MPQ_FILE_REPLACEEXISTING,MPQ_COMPRESSION_ZLIB,MPQ_COMPRESSION_NEXT_SAME);
+    std::cout <<"added SpellItemEnchantment.dbc"<< std::endl;
+    std::cout <<"End create MPQ"<< std::endl;
+
+    SFileCloseArchive(a);
     return true;
 };
