@@ -1,6 +1,6 @@
 CC = g++
 CXXFLAGS = -c
-$(info $(SHELL))
+
 OUT_FILE = FallafelHelper
 
 OBJECTS = dbc.o main.o
