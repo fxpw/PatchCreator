@@ -58,7 +58,7 @@ bool DBCFileLoader::Load(char const *filename)
     if(fread(&stringSize, 4, 1, pf) != 1) // 5 String size это сколько выделяется на стрингу
         return false;
     std::cout<<stringSize<<" stringSize \n";
-    std::cout<<recordSize * recordCount + stringSize<<"\n";
+    std::cout<<recordSize * recordCount + stringSize<< " data size"<< "\n";
     data = new unsigned char[recordSize * recordCount + stringSize]; // data unsigned char*[]
 
     stringTable = data + recordSize * recordCount;

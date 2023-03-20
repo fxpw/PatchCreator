@@ -11,7 +11,7 @@
 
 #include <string>
 #include <stdexcept>
-inline unsigned int stoui(const std::string& s)
+inline unsigned int stringToUInt(const std::string& s)
 {
     unsigned long lresult = stoul(s, 0, 10);
     unsigned int result = lresult;
@@ -26,485 +26,72 @@ using json = nlohmann::json;
 
 DBCFileLoader DBCSpell;
 
-#pragma region spellIdToVisual
-    std::map<uint32,uint32> spellIdToVisual{
-        // {34161, 1},
-        // {48438, 1},
-        // {308090, 1},
-        // {310187, 1},
-        // {310188, 1},
-        // {310189, 1},
-        // {310190, 1},
-        // {315225, 1},
-        // {308105, 1},
-        // {308113, 1},
-        // {311868, 1},
-        // {17, 1},
-        // {592, 1},
-        // {600, 1},
-        // {3747, 1},
-        // {6065, 1},
-        // {6066, 1},
-        // {10898, 1},
-        // {10899, 1},
-        // {10900, 1},
-        // {10901, 1},
-        // {11647, 1},
-        // {11835, 1},
-        // {11974, 1},
-        // {17139, 1},
-        // {20697, 1},
-        // {22187, 1},
-        // {25217, 1},
-        // {25218, 1},
-        // {27607, 1},
-        // {29408, 1},
-        // {32595, 1},
-        // {33147, 1},
-        // {35944, 1},
-        // {36051, 1},
-        // {41373, 1},
-        // {44175, 1},
-        // {44291, 1},
-        // {46193, 1},
-        // {48065, 1},
-        // {66099, 1},
-        // {68032, 1},
-        // {71548, 1},
-        // {71780, 1},
-        // {302269, 1},
-        // {305082, 1},
-        // {308143, 1},
-        // {308229, 1},
-        // {311845, 1},
-        // {16190, 1},
-        // {16191, 1},
-        // {39609, 1},
-        // {309084, 1},
-        // {309087, 1},
-        // {309229, 1},
-        // {309231, 1},
-        // {309232, 1},
-        // {309233, 1},
-        // {310121, 1},
-        // {13809, 1},
-        // {48818, 1},
-        // {48819, 1},
-        // {311834, 1},
-        // {311839, 1},
-        // {316162, 1},
-        // {316367, 1},
-        // {316455, 1},
-        // {316456, 1},
-        // {316457, 1},
-        // {310810, 1},
-        // {310811, 1},
-        // {310812, 1},
-        // {310813, 1},
-        // {310814, 1},
-        // {310815, 1},
-        // {310545, 1},
-        // {310546, 1},
-        // {310547, 1},
-        // {310548, 1},
-        // {310549, 1},
-        // {310550, 1},
-        // {310551, 1},
-        // {310552, 1},
-        // {310553, 1},
-        // {310555, 1},
-        // {310556, 1},
-        // {310501, 1},
-        // {310476, 1},
-        // {310477, 1},
-        // {310479, 1},
-        // {310632, 1},
-        // {310633, 1},
-        // {310634, 1},
-        // {310674, 1},
-        // {310658, 1},
-        // {308640, 1},
-        // {308641, 1},
-        // {308642, 1},
-        // {308643, 1},
-        // {308644, 1},
-        // {308645, 1},
-        // {308646, 1},
-        // {308647, 1},
-        // {308648, 1},
-        // {308649, 1},
-        // {308656, 1},
-        // {308636, 1},
-        // {308663, 1},
-        // {308664, 1},
-        // {308665, 1},
-        // {308666, 1},
-        // {308668, 1},
-        // {308669, 1},
-        // {308670, 1},
-        // {308671, 1},
-        // {308552, 1},
-        // {308553, 1},
-        // {308555, 1},
-        // {308556, 1},
-        // {308586, 1},
-        // {308582, 1},
-        // {308565, 1},
-        // {308470, 1},
-        // {308469, 1},
-        // {308475, 1},
-        // {63018, 1},
-        // {63023, 1},
-        // {312586, 1},
-        // {312597, 1},
-        // {312588, 1},
-        // {312589, 1},
-        // {312941, 1},
-        // {312942, 1},
-        // {63387, 1},
-        // {64019, 1},
-        // {64531, 1},
-        // {64532, 1},
-        // {312448, 1},
-        // {312449, 1},
-        // {312801, 1},
-        // {312802, 1},
-        // {63666, 1},
-        // {65026, 1},
-        // {312347, 1},
-        // {312435, 1},
-        // {312700, 1},
-        // {312788, 1},
-        // {61170, 1},
-        // {70123, 1},
-        // {71047, 1},
-        // {71048, 1},
-        // {71049, 1},
-        // {71387, 1},
-        // {300718, 1},
-        // {28531, 1},
-        // {312192, 1},
-        // {312193, 1},
-        // {312198, 1},
-        // {312199, 1},
-        // {312200, 1},
-        // {312202, 1},
-        // {317252, 1},
-        // {317258, 1},
-        // {317253, 1},
-        // {317254, 1},
-        // {310636, 1},
-        // {310637, 1},
-        // {308550, 1},
-        // {308471, 1},
-        // {308472, 1},
-        // {312590, 1},
-        // {312591, 1},
-        // {308548, 1},
-        // {309046, 1},
-        // {309047, 1},
-        // {309065, 1},
-        // {310496, 1},
-        // {310500, 1},
-        // {63276, 1},
-        // {63278, 1},
-        // {312621, 1},
-        // {312622, 1},
-        // {312974, 1},
-        // {312975, 1},
-        // {317565, 1},
-        // {317566, 1},
-        // {312208, 1},
-        // {312209, 1},
-        // {317160, 1},
-        // {317161, 1},
-        // {306487, 1},
-        // {306488, 1},
-        // {319177, 1},
-        // {304798, 1},
-        // {304782, 1},
-        // {304777, 1},
-        // {304778, 1},
-        // {304765, 1},
-        // {304761, 1},
-        // {304811, 1},
-        // {319824, 1},
-        // {319825, 1},
-        // {319826, 1},
-        // {319827, 1},
-        // {312218, 1},
-        // {312219, 1},
-        // {318754, 1},
-        // {64413, 1},
-        // {69055, 1},
-        // {70814, 1},
-        // {69195, 1},
-        // {71219, 1},
-        // {73031, 1},
-        // {73032, 1},
-        // {314953, 1},
-        // {320438, 1},
-        // {318824, 1},
-        // {318828, 1},
-        // {320292, 1},
-        // {319021, 1},
-        // {305515, 1},
-        // {306535, 1},
-        // {306536, 1},
-        // {306554, 1},
-        // {308001, 19},
-        // {308002, 19},
-        // {308003, 19},
-        // {308051, 64},
-        // {308057, 64},
-        // {308062, 67},
-        // {310560, 63},
-        // {310659, 15254},
-        // {310660, 15254},
-        // {312943, 44},
-        // {63024, 25},
-        // {308750, 15254},
-        // {319029, 15254},
-    };
+std::map<uint32,uint32> SpellChange {};
+std::map<uint32,uint32> CreatureDusplayInfoChange {};
+std::map<uint32,uint32> ItemDusplayInfoChange {};
+std::map<uint32,uint32> SpellUtemEnchantmentChange {};
 
-#pragma endregion
-
-#pragma region visualChange
-    std::map<uint32,uint32> visualChange {
-        // {3302,0},
-        // {364,0},
-        // {4279,0},
-        // {7606,0},
-        // {870,0},
-        // {8514,0},
-        // {4279,0},
-        // {9917,0},
-        // {11568,0},
-        // {5600,0},
-        // {5600,0},
-        // {12898,0},
-        // {13601,0},
-        // {13602,0},
-        // {13323,25},
-        // {13526,0},
-        // {13553,0},
-        // {13380,0},
-        // {13667,0},
-        // {13521,0},
-        // {13677,0},
-        // {13380,0},
-        // {13521,0},
-        // {13667,0},
-        // {15206,0},
-        // {14608,0},
-        // {14812,0},
-        // {15206,0},
-        // {14812,0},
-        // {14812,0},
-        // {14812,0},
-        // {14608,0},
-        // {7606,0},
-        // {14608,0},
-        // {14608,0},
-        // {7606,0},
-        // {17165,0},
-        // {7479,0},
-        // {14093,0},
-        // {17166,0},
-        // {8312,0},
-        // {19643,0},
-        // {19645,0},
-        // {8872,0},
-        // {17431,0},
-        // {10693,0},
-        // {17460,0},
-        // {17461,0},
-        // {17462,0},
-        // {17537,19},
-        // {17538,19},
-        // {17539,19},
-        // {17313,64},
-        // {17313,64},
-        // {2519,67},
-        // {58,0},
-        // {17543,0},
-        // {17544,0},
-        // {17410,0},
-        // {17552,0},
-        // {17553,0},
-        // {17554,0},
-        // {11099,0},
-        // {9643,0},
-        // {9645,0},
-        // {262,0},
-        // {270,0},
-        // {10980,0},
-        // {10982,0},
-        // {1263,0},
-        // {7684,0},
-        // {17272,0},
-        // {963,0},
-        // {17595,0},
-        // {17597,0},
-        // {17598,0},
-        // {17599,0},
-        // {17600,0},
-        // {17601,0},
-        // {17602,0},
-        // {17603,0},
-        // {17604,0},
-        // {17605,0},
-        // {963,0},
-        // {17594,0},
-        // {17594,0},
-        // {17594,0},
-        // {17594,0},
-        // {17245,0},
-        // {17245,0},
-        // {17245,0},
-        // {17675,0},
-        // {17621,15254},
-        // {17714,0},
-        // {17715,0},
-        // {17725,0},
-        // {319,0},
-        // {17738,0},
-        // {17804,0},
-        // {18512,0},
-        // {18513,0},
-        // {17805,0},
-        // {17616,0},
-        // {18521,0},
-        // {18522,0},
-        // {18523,0},
-        // {18524,0},
-        // {18550,0},
-        // {18551,0},
-        // {18552,0},
-        // {18569,0},
-        // {18573,0},
-        // {18574,0},
-        // {18593,0},
-        // {18594,0},
-        // {18595,0},
-        // {18596,0},
-        // {14248,0},
-        // {18598,0},
-        // {15190,0},
-        // {14860,0},
-        // {210,0},
-        // {6775,0},
-        // {18611,63},
-        // {18624,0},
-        // {18624,0},
-        // {18624,0},
-        // {8850,0},
-        // {8820,0},
-        // {944,0},
-        // {8850,15254},
-        // {8820,15254},
-        // {18597,0},
-        // {18627,0},
-        // {17738,0},
-        // {18628,0},
-        // {17738,0},
-        // {5600,0},
-        // {12317,0},
-        // {9735,0},
-        // {18806,0},
-        // {18807,0},
-        // {18812,0},
-        // {18813,0},
-        // {18814,0},
-        // {8164,0},
-        // {18820,0},
-        // {18821,0},
-        // {18826,0},
-        // {18827,0},
-        // {13667,0},
-        // {13667,0},
-        // {13380,0},
-        // {13521,0},
-        // {13500,0},
-        // {13601,0},
-        // {13602,0},
-        // {13323,0},
-        // {13324,0},
-        // {7867,0},
-        // {13526,0},
-        // {13553,0},
-        // {13667,0},
-        // {13667,0},
-        // {13380,0},
-        // {13521,0},
-        // {13601,0},
-        // {13602,0},
-        // {13323,44},
-        // {13526,0},
-        // {13553,0},
-        // {19155,0},
-        // {11568,0},
-        // {19175,0},
-        // {19175,0},
-        // {18622,0},
-        // {17611,0},
-        // {17612,0},
-        // {19503,0},
-        // {18820,0},
-        // {18821,0},
-        // {19341,0},
-        // {18808,0},
-        // {18809,0},
-        // {19373,0},
-        // {19390,0},
-        // {19391,0},
-        // {19584,0},
-        // {19595,0},
-        // {19602,0},
-        // {19638,0},
-        // {19640,15254},
-        // {19643,0},
-        // {19679,0},
-        // {19680,0},
-        // {19681,0},
-        // {19595,0},
-    };
-
-#pragma endregion
-
-bool check_dbc();
-bool change_dbc();
+bool ChangeSpellDBC();
+bool ChangeCreatureDusplayInfoDBC();
+bool ChangeItemDusplayInfoDBC();
+bool ChangeSpellUtemEnchantmentDBC();
 bool parseJsons();
 
 int main(){
-    // std::cout << "*****************************************************************************\n";
-    // std::cout << "DBCv" << DBCTOSQL_VER << "\n<" << DBCTOSQL_WEB <<">\n";
-    std::cout << "*****************************************************************************\n\n\n";
 
-    std::cout << "Spell.dbc format:\n";
-    std::cout << "DBC columns numbers:" << SPELL_DBC_COLUMN_NUMS << std::endl;
-    // std::cout << "DBC rows numbers: " << SPELL_DBC_ROWS_NUMS << std::endl;
-    std::cout << "DBC supported client build: " << SPELL_DBC_CLIENT_BUILD << "\n\n";
-
-
-    DBCSpell.Load(SPELL_DBC);
     parseJsons();
     
-    if(check_dbc()){
-        std::cout << "Ready. DBCs converted.\n";
-        change_dbc();
+    ChangeSpellDBC();
 
-    }
+
     #ifdef WIN32
-    std::cout << "\n\nPlease press Enter to exit...";
-    getchar();
+        std::cout << "\n\nPlease press Enter to exit...";
+        getchar();
     #endif
 
     return 0;
 }
 
-bool check_dbc(){
-    /********** Spell.dbc **********/
+bool parseJsons(){
+    /////////////////////
+    std::ifstream f1("./jsons/Spell.dbc.json");
+    json data1 = json::parse(f1);
+    for (json::iterator it = data1.begin(); it != data1.end(); ++it) {
+        // std::cout << "Spell.dbc add" << it.key() << " " <<it.value() << '\n';
+        SpellChange[stringToUInt(it.key())] = it.value();
+    }
+    /////////////////////
+    std::ifstream f2("./jsons/CreatureDusplayInfo.dbc.json");
+    json data2 = json::parse(f2);
+    for (json::iterator it = data2.begin(); it != data2.end(); ++it) {
+        // std::cout << "CreatureDusplayInfo.dbc add" << it.key() << " " <<it.value() << '\n';
+        CreatureDusplayInfoChange[stringToUInt(it.key())] = it.value();
+    }
+    /////////////////////
+    std::ifstream f3("./jsons/ItemDusplayInfo.dbc.json");
+    json data3 = json::parse(f3);
+    for (json::iterator it = data3.begin(); it != data3.end(); ++it) {
+        // std::cout << "ItemDusplayInfo.dbc add" << it.key() << " " <<it.value() << '\n';
+        ItemDusplayInfoChange[stringToUInt(it.key())] = it.value();
+    }
+    /////////////////////
+    std::ifstream f4("./jsons/SpellUtemEnchantment.dbc.json");
+    json data4 = json::parse(f4);
+    for (json::iterator it = data4.begin(); it != data4.end(); ++it) {
+        // std::cout << "Spell.dbc add" << it.key() << " " <<it.value() << '\n';
+        SpellUtemEnchantmentChange[stringToUInt(it.key())] = it.value();
+    }
+    /////////////////////
+    return true;
+};
+
+bool ChangeSpellDBC(){
+    std::cout << "*****************************************************************************\n";
+    std::cout << "Spell.dbc format:\n";
+    std::cout << "DBC columns numbers:" << SPELL_DBC_COLUMN_NUMS << std::endl;
+    std::cout << "DBC supported client build: " << SPELL_DBC_CLIENT_BUILD << "\n";
+
+    DBCSpell.Load(SPELL_DBC);
     if(!DBCSpell.getNumFields()){
         std::cout << "ERROR: Can not open file: " << SPELL_DBC << std::endl;
         return false;
@@ -516,27 +103,7 @@ bool check_dbc(){
         std::cout << SPELL_DBC << " - ERROR: Column numbers do not match with the supported DBC format." << std::endl;
         return false;
     }
-    std::cout << SPELL_DBC << " - DBC format: OK." << "\n\n";
-    return true;
-}
-bool parseJsons(){
-    std::ifstream f("visualChange.json");
-    json data = json::parse(f);
-
-    for (json::iterator it = data.begin(); it != data.end(); ++it) {
-        std::cout << it.key() << " " <<it.value() << '\n';
-        visualChange[stoui(it.key())] = it.value();
-    }
-    std::ifstream f2("spellIdToVisual.json");
-    json data2 = json::parse(f2);
-
-    for (json::iterator it = data2.begin(); it != data2.end(); ++it) {
-        std::cout << it.key() << " " <<it.value() << '\n';
-        spellIdToVisual[stoui(it.key())] = it.value();
-    }
-    return true;
-}
-bool change_dbc(){
+    std::cout << SPELL_DBC << " - DBC format: OK." << "\n";
 
     FILE* npf = fopen("Spell.dbc","wb");
     fwrite(&DBCSpell.header,4,1,npf);
@@ -550,20 +117,17 @@ bool change_dbc(){
     fwrite(&DBCSpell.stringSize,4,1,npf);
 
 
-
-
-
     for (int i = 0; i < DBCSpell.recordCount; i++){
         auto record = DBCSpell.getRecord(i);
         int spellid = record.getInt32(0);
         const char* spellNameGetet = record.getString(136);
         std::string spellName(spellNameGetet);
-        uint32 spellVisual = record.getUInt32(131);
+        uint32 spellVisualID = record.getUInt32(131);
 
-        if (visualChange.count(spellVisual)){
-            std::cout<< "spellid->("<< spellid <<") spellname->("<< spellName <<") spellVisual->("<< spellVisual<<") changed spellVisual to " << spellIdToVisual[spellVisual]<< std::endl;
-            // std::cout<< "{"<<spellVisual << "," << spellIdToVisual[spellVisual] << "} changed to 0" << std::endl;
-            record.setUInt32(131,spellIdToVisual[spellVisual]);
+        if (SpellChange.count(spellVisualID)){
+            // std::cout<< "spellid->("<< spellid <<") spellname->("<< spellName <<") SpellChange->("<< spellVisualID<<") changed SpellChange to " << SpellChange[spellVisualID]<< std::endl;
+            // std::cout<< "{"<<SpellChange << "," << SpellChange[SpellChange] << "} changed to 0" << std::endl;
+            record.setUInt32(131,SpellChange[spellVisualID]);
         }
     }   
 
@@ -574,7 +138,8 @@ bool change_dbc(){
 
 
     fclose(npf);
-
+    std::cout << SPELL_DBC << " -> Spell.dbc: OK." << "\n\n";
+    std::cout << "*****************************************************************************\n\n\n";
     return true;
 }
 
