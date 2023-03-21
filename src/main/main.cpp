@@ -97,8 +97,8 @@ bool ExtractMPQ(){
      std::cout << "*****************************ExtractMPQ********************************\n";
     HANDLE mpq;
     std::cout<< "SFileOpenArchive start"<< std::endl;
-    std::cout<< SFileOpenArchive("./originalMPQ/patch-ruRU-4.mpq",0,STREAM_FLAG_WRITE_SHARE,&mpq) << std::endl;
-    std::cout<< "SFileOpenArchive" << GetLastError() << std::endl;
+    SFileOpenArchive("./originalMPQ/patch-ruRU-4.mpq",0,STREAM_FLAG_WRITE_SHARE,&mpq);
+    // std::cout<< "SFileOpenArchive error " << GetLastError() << std::endl;
     if(mpq){
 
         std::cout<< "SFileExtractFile Spell.dbc"<< std::endl;
@@ -270,6 +270,6 @@ bool CreateMPQ(){
     std::cout <<"End create MPQ"<< std::endl;
 
     SFileCloseArchive(mpq);
+    std::cout << "*********************************CreateMPQ**********************************\n\n\n";
     return true;
-     std::cout << "*********************************CreateMPQ **********************************\n\n\n";
 };
