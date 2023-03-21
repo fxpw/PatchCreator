@@ -5,3 +5,7 @@ cp -rf /mnt/d/games/sirus/World\ of\ Warcraft\ Sirus/Data/ruRU/patch-ruRU-4.mpq 
 make
 ./build/apps/FH
 cp -rf /mnt/c/Users/fxpw/source/repos/fxpw/Falaffell\ Helper/newMPQ/patch-ruRU-x.mpq /mnt/d/games/sirus/World\ of\ Warcraft\ Sirus/Data/ruRU/
+# cp -rf /mnt/c/Users/fxpw/source/repos/fxpw/Falaffell\ Helper/newMPQ/patch-ruRU-x.mpq /mnt/d/programms/repos/patch-ruRu-X/
+# cd /mnt/d/programms/repos/patch-ruRu-X/
+# git commit -a -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`"
+# git push
