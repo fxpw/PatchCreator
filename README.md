@@ -1,4 +1,5 @@
 # Fallaffell-Helper
-u need Spell.dbc throw to origina/ directory
-# visualChange.json
-write table{ VisualId, newVisual id}
+u need patch-ruRU-4.mpq throw to originaMPQ/ directory
+
+# Spell.dbc.json
+write table{ Spellid, newVisual id}

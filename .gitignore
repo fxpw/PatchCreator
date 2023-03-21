@@ -1,12 +1,4 @@
-/Spell.dbc
-/Spell_Copy.dbc
-/dbc.o
-/main.o
-FallafelHelper
-original/*
-hlam.cpp
-/ItemDisplayInfo.dbc
-/SpellItemEnchantment.dbc
-buildedDBC/*
-/build/*
-patch-ruRU-x.mpq
+build/*
+newMPQ/*
+originalMPQ/*
+DBFilesClient/*
