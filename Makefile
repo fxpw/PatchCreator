@@ -41,7 +41,10 @@ release: all
 clear:
 	-@rm -rvf $(OBJ_DIR)/*
 	-@rm -rvf $(APP_DIR)/*
-
+deletempq:
+	-@rm -rvf newMPQ/*
+	-@rm -rvf originalMPQ/*
+	-@rm -rvf DBFilesClient/*
 info:
 	@echo "[*] Application dir: ${APP_DIR}     "
 	@echo "[*] Object dir:      ${OBJ_DIR}     "
