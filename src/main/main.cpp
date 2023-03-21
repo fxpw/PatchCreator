@@ -94,6 +94,7 @@ bool parseJsons(){
     return true;
 };
 bool ExtractMPQ(){
+     std::cout << "*****************************ExtractMPQ********************************\n";
     HANDLE mpq;
     std::cout<< "SFileOpenArchive start"<< std::endl;
     std::cout<< SFileOpenArchive("./originalMPQ/patch-ruRU-4.mpq",0,STREAM_FLAG_WRITE_SHARE,&mpq) << std::endl;
@@ -101,19 +102,21 @@ bool ExtractMPQ(){
     if(mpq){
 
         std::cout<< "SFileExtractFile Spell.dbc"<< std::endl;
-        std::cout<<SFileExtractFile(mpq,"DBFilesClient\\Spell.dbc","./DBFilesClient/Spell.dbc",SFILE_OPEN_FROM_MPQ)  << std::endl;
+        SFileExtractFile(mpq,"DBFilesClient\\Spell.dbc","./DBFilesClient/Spell.dbc",SFILE_OPEN_FROM_MPQ);
         std::cout<< "SFileExtractFile ItemDisplayInfo.dbc"<< std::endl;
-        std::cout<<SFileExtractFile(mpq,"DBFilesClient\\ItemDisplayInfo.dbc","./DBFilesClient/ItemDisplayInfo.dbc",SFILE_OPEN_FROM_MPQ)  << std::endl;
+        SFileExtractFile(mpq,"DBFilesClient\\ItemDisplayInfo.dbc","./DBFilesClient/ItemDisplayInfo.dbc",SFILE_OPEN_FROM_MPQ);
         std::cout<< "SFileExtractFile SpellItemEnchantment.dbc"<< std::endl;
-        std::cout<<SFileExtractFile(mpq,"DBFilesClient\\SpellItemEnchantment.dbc","./DBFilesClient/SpellItemEnchantment.dbc",SFILE_OPEN_FROM_MPQ)  << std::endl;
+        SFileExtractFile(mpq,"DBFilesClient\\SpellItemEnchantment.dbc","./DBFilesClient/SpellItemEnchantment.dbc",SFILE_OPEN_FROM_MPQ);
         std::cout<< SFileCloseArchive(mpq)  << std::endl;
         return true;
+        std::cout << "*****************************ExtractMPQ********************************\n";
     }
     return false;
+     
 };
 
 bool ChangeSpellDBC(){
-    std::cout << "*****************************************************************************\n";
+    std::cout << "*****************************ChangeSpellDBC********************************\n";
     std::cout << "Spell.dbc format:\n";
 
     DBCSpell.Load("./DBFilesClient/Spell.dbc");
@@ -161,21 +164,21 @@ bool ChangeSpellDBC(){
 
     fclose(npf);
     std::cout << "./DBFilesClient/Spell.dbc" << " -> Spell.dbc: OK." << "\n\n";
-    std::cout << "*****************************************************************************\n\n\n";
+    std::cout << "****************************ChangeSpellDBC**********************************\n\n\n";
     return true;
 }
 
 bool ChangeCreatureDisplayInfoDBC(){
-    std::cout << "*****************************************************************************\n";
+    std::cout << "******************************ChangeCreatureDisplayInfoDBC********************************\n";
     std::cout << "CreatureDusplayInfo.dbc format:\n";
 
     DBCCreatureDusplayInfo.Load("./DBFilesClient/CreatureDisplayInfo.dbc");
-    std::cout << "*****************************************************************************\n\n\n";
+    std::cout << "******************************ChangeCreatureDisplayInfoDBC**************************\n\n\n";
     return true;
 };
 
 bool ChangeItemDisplayInfoDBC(){
-    std::cout << "*****************************************************************************\n";
+    std::cout << "*****************************ChangeItemDisplayInfoDBC********************************\n";
     std::cout << "ItemDisplayInfo.dbc format:\n";
 
     DBCItemDisplayInfo.Load("./DBFilesClient/ItemDisplayInfo.dbc");
@@ -209,12 +212,12 @@ bool ChangeItemDisplayInfoDBC(){
     fclose(npf);
 
     std::cout << "./DBFilesClient/ItemDisplayInfo.dbc" << " -> ItemDisplayInfo.dbc: OK." << "\n\n";
-    std::cout << "*****************************************************************************\n\n\n";
+    std::cout << "**********************************ChangeItemDisplayInfoDBC*****************************\n\n\n";
     return true;
 }
 
 bool ChangeSpellItemEnchantmentDBC(){
-    std::cout << "*****************************************************************************\n";
+    std::cout << "**************************ChangeSpellItemEnchantmentDBC****************************\n";
     std::cout << "SpellItemEnchantment.dbc format:\n";
 
     DBCSpellItemEnchantment.Load("./DBFilesClient/SpellItemEnchantment.dbc");
@@ -247,12 +250,13 @@ bool ChangeSpellItemEnchantmentDBC(){
     fclose(npf);
 
     std::cout << "./DBFilesClient/SpellItemEnchantment.dbc" << " -> SpellItemEnchantment.dbc: OK." << "\n\n";
-    std::cout << "*****************************************************************************\n\n\n";
+    std::cout << "***********************************ChangeSpellItemEnchantmentDBC*******************************\n\n\n";
     return true;
 }
 
 
 bool CreateMPQ(){
+    std::cout << "**********************************CreateMPQ************************************\n\n\n";
     HANDLE mpq;
 
     SFileCreateArchive("./newMPQ/patch-ruRU-x.mpq",MPQ_CREATE_ATTRIBUTES + MPQ_CREATE_ARCHIVE_V2,0x000000010,&mpq);
@@ -267,4 +271,5 @@ bool CreateMPQ(){
 
     SFileCloseArchive(mpq);
     return true;
+     std::cout << "*********************************CreateMPQ **********************************\n\n\n";
 };
