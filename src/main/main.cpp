@@ -151,7 +151,7 @@ bool ChangeSpellDBC(){
 
         if (SpellChange.count(spellid)){
             // std::cout<< "spellid->("<< spellid <<") spellname->("<< spellName <<") SpellChange->("<< spellVisualID<<") changed SpellChange to " << SpellChange[spellVisualID]<< std::endl;
-            std::cout<< "spell id- > "<<spellid << "  spell visual -> " << spellVisualID << " changed to "<< SpellChange[spellid] << std::endl;
+            // std::cout<< "spell id- > "<<spellid << "  spell visual -> " << spellVisualID << " changed to "<< SpellChange[spellid] << std::endl;
             record.setUInt32(131,SpellChange[spellid]);
         }
     }   
@@ -193,6 +193,7 @@ bool ChangeItemDisplayInfoDBC(){
         auto record = DBCItemDisplayInfo.getRecord(i);
 
         record.setUInt32(23,0);
+        record.setUInt32(11,0);
 
     }   
     FILE* npf = fopen("./DBFilesClient/ItemDisplayInfo.dbc","wb");
