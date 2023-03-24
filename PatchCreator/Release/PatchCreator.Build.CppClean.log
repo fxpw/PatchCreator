@@ -3,12 +3,12 @@ d:\github\patchcreator\patchcreator\release\vc143.pdb
 d:\github\patchcreator\patchcreator\release\pch.obj
 d:\github\patchcreator\patchcreator\release\patchcreatormain.obj
 d:\github\patchcreator\patchcreator\release\dllmain.obj
-d:\github\patchcreator\release\patchcreator.lib
-d:\github\patchcreator\release\patchcreator.exp
 d:\github\patchcreator\release\patchcreator.dll
+d:\github\patchcreator\patchcreator\release\patchcreator.ipdb
 d:\github\patchcreator\patchcreator\release\patchcreator.iobj
 d:\github\patchcreator\release\patchcreator.pdb
-d:\github\patchcreator\patchcreator\release\patchcreator.ipdb
+d:\github\patchcreator\release\patchcreator.lib
+d:\github\patchcreator\release\patchcreator.exp
 d:\github\patchcreator\patchcreator\release\patchcreator.tlog\cl.command.1.tlog
 d:\github\patchcreator\patchcreator\release\patchcreator.tlog\cl.read.1.tlog
 d:\github\patchcreator\patchcreator\release\patchcreator.tlog\cl.write.1.tlog

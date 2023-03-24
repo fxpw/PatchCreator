@@ -1,8 +1,8 @@
 ﻿  pch.cpp
   dllmain.cpp
   PatchCreatorMain.cpp
-D:\GitHub\PatchCreator\PatchCreator\PatchCreatorMain.cpp(49,6): warning C4273: PrintHelloWorld: несовместимое связывание dll
-D:\GitHub\PatchCreator\PatchCreator\сonnectFunc.h(17,33): message : см. предыдущее определение "PrintHelloWorld"
+D:\GitHub\PatchCreator\PatchCreator\PatchCreatorMain.cpp(49,6): warning C4273: PatchCreate: несовместимое связывание dll
+D:\GitHub\PatchCreator\PatchCreator\сonnectFunc.h(17,33): message : см. предыдущее определение "PatchCreate"
      Создается библиотека D:\GitHub\PatchCreator\Release\PatchCreator.lib и объект D:\GitHub\PatchCreator\Release\PatchCreator.exp
   Создание кода
   Previous IPDB not found, fall back to full compilation.

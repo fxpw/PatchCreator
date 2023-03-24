@@ -29,36 +29,32 @@ bool ChangeCreatureDisplayInfoDBC(std::string);
 bool ChangeItemDisplayInfoDBC(std::string);
 bool ChangeSpellItemEnchantmentDBC(std::string);
 bool CreateMPQ(std::string);
-bool parseJsons(Maap*);
+bool ParseJsons(Maap*);
 bool ExtractMPQ(std::string);
 
-int MainFunction(Maap* pMaap,std::string a = "error") {
+bool MainFunction(Maap* pMaap, std::string a = "error") {
 	std::string path = a;
-	parseJsons(pMaap);
+	ParseJsons(pMaap);
 	ExtractMPQ(path);
 
 	ChangeSpellDBC(path);
 	ChangeCreatureDisplayInfoDBC(path);
 	ChangeItemDisplayInfoDBC(path);
 	ChangeSpellItemEnchantmentDBC(path);
-	CreateMPQ(path);
-	return 0;
+
+	return CreateMPQ(path);
 }
 
 
-bool PrintHelloWorld(Maap* pMaap,const char* a) {
+bool PatchCreate(Maap* pMaap, const char* a) 
+{
 	std::string news = std::string(a);
-	MainFunction(pMaap,news);
-	return true;
+	return MainFunction(pMaap, news);
 }
 
-bool parseJsons(Maap* pMaap) {
-
-	/////////////////////
-	//std::ifstream f1("./jsons/Spell.dbc.parser.json");
+bool ParseJsons(Maap* pMaap) {
 	int len = sizeof(pMaap) / sizeof(float);
 	for (int i = 0; i < len; i++) {
-		// std::cout << "Spell.dbc add" << it.key() << " " <<it.value() << '\n';
 		SpellChange[pMaap[i].Key] = pMaap[i].Value;
 	}
 	return true;
@@ -82,6 +78,7 @@ wchar_t* ConverterToWChar(const char* orig) {
 
 
 bool ExtractMPQ(std::string path = "error") {
+
 	//std::cout << "*****************************ExtractMPQ********************************\n";
 	HANDLE mpq;
 	//std::cout << "SFileOpenArchive start" << std::endl;
@@ -99,12 +96,11 @@ bool ExtractMPQ(std::string path = "error") {
 		//std::cout << "*****************************ExtractMPQ********************************\n";
 	}
 	return false;
-
 };
 
 bool ChangeSpellDBC(std::string path = "error") {
-	//std::cout << "*****************************ChangeSpellDBC********************************\n";
-	//std::cout << "Spell.dbc format:\n";
+	//try {//std::cout << "*****************************ChangeSpellDBC********************************\n";
+		//std::cout << "Spell.dbc format:\n";
 	DBCSpell.Load("./Spell.dbc");
 	if (!DBCSpell.getNumFields()) {
 		//std::cout << "ERROR: Can not open file: " << "./DBFilesClient/Spell.dbc" << std::endl;
@@ -151,7 +147,8 @@ bool ChangeSpellDBC(std::string path = "error") {
 		//std::cout << "****************************ChangeSpellDBC**********************************\n\n\n";
 		return true;
 	}
-	else {
+	else
+	{
 		return false;
 	}
 
@@ -159,7 +156,7 @@ bool ChangeSpellDBC(std::string path = "error") {
 
 bool ChangeCreatureDisplayInfoDBC(std::string path = "da") {
 	//std::cout << "******************************ChangeCreatureDisplayInfoDBC********************************\n";
-	//std::cout << "CreatureDusplayInfo.dbc format:\n";
+		//std::cout << "CreatureDusplayInfo.dbc format:\n";
 	DBCCreatureDusplayInfo.Load("./CreatureDisplayInfo.dbc");
 	//std::cout << "******************************ChangeCreatureDisplayInfoDBC**************************\n\n\n";
 	return true;
@@ -173,7 +170,7 @@ bool ChangeItemDisplayInfoDBC(std::string path = "da") {
 		//std::cout << "ERROR: Can not open file: " << "./DBFilesClient/ItemDisplayInfo.dbc" << std::endl;
 		return false;
 	}
-	else 
+	else
 	{
 		//std::cout << "./DBFilesClient/ItemDisplayInfo.dbc" << " - Opened successful." << std::endl << "./DBFilesClient/ItemDisplayInfo.dbc" << " - fields: "
 			//<< DBCItemDisplayInfo.getNumFields() << ", rows: " << DBCItemDisplayInfo.getNumRows() << std::endl;
@@ -247,20 +244,24 @@ bool ChangeSpellItemEnchantmentDBC(std::string path = "error") {
 
 bool CreateMPQ(std::string path = "error") {
 	//std::cout << "**********************************CreateMPQ************************************\n\n\n";
-	HANDLE mpq;
-	remove((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str());
-	SFileCreateArchive(ConverterToWChar((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str()), MPQ_CREATE_ATTRIBUTES + MPQ_CREATE_ARCHIVE_V2, 0x000000010, &mpq);
-	SFileAddFileEx(mpq, ConverterToWChar("./Spell.dbc"), "DBFilesClient\\Spell.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
-	remove("./Spell.dbc");
-	//std::cout << "added Spell.dbc" << std::endl;
-	SFileAddFileEx(mpq, ConverterToWChar("./ItemDisplayInfo.dbc"), "DBFilesClient\\ItemDisplayInfo.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
-	//std::cout << "added ItemDisplayInfo.dbc" << std::endl;
-	remove("./ItemDisplayInfo.dbc");
-	SFileAddFileEx(mpq, ConverterToWChar("./SpellItemEnchantment.dbc"), "DBFilesClient\\SpellItemEnchantment.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
-	//std::cout << "added SpellItemEnchantment.dbc" << std::endl;
-	remove("./SpellItemEnchantment.dbc");
-	//std::cout << "End create MPQ" << std::endl;
-	SFileCloseArchive(mpq);
-	//std::cout << "*********************************CreateMPQ**********************************\n\n\n";
-	return true;
+	try {
+		HANDLE mpq;
+		remove((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str());
+		SFileCreateArchive(ConverterToWChar((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str()), MPQ_CREATE_ATTRIBUTES + MPQ_CREATE_ARCHIVE_V2, 0x000000010, &mpq);
+		SFileAddFileEx(mpq, ConverterToWChar("./Spell.dbc"), "DBFilesClient\\Spell.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
+		remove("./Spell.dbc");
+		//std::cout << "added Spell.dbc" << std::endl;
+		SFileAddFileEx(mpq, ConverterToWChar("./ItemDisplayInfo.dbc"), "DBFilesClient\\ItemDisplayInfo.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
+		//std::cout << "added ItemDisplayInfo.dbc" << std::endl;
+		remove("./ItemDisplayInfo.dbc");
+		SFileAddFileEx(mpq, ConverterToWChar("./SpellItemEnchantment.dbc"), "DBFilesClient\\SpellItemEnchantment.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
+		//std::cout << "added SpellItemEnchantment.dbc" << std::endl;
+		remove("./SpellItemEnchantment.dbc");
+		//std::cout << "End create MPQ" << std::endl;
+		return SFileCloseArchive(mpq);
+		//std::cout << "*********************************CreateMPQ**********************************\n\n\n";
+	}
+	catch (...) {
+		return false;
+	}
 };

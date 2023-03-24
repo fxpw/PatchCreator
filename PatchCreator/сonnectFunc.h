@@ -14,4 +14,4 @@ struct Maap
     int Value;
 };
 
-extern "C" PathCreator_API bool PrintHelloWorld(Maap * pMaap,const char* a);
+extern "C" PathCreator_API bool PatchCreate(Maap * pMaap,const char* a);
