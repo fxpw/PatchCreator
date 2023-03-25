@@ -25,7 +25,7 @@ bool ChangeCreatureDisplayInfoDBC(std::string);
 bool ChangeItemDisplayInfoDBC(std::string);
 bool ChangeSpellItemEnchantmentDBC(std::string);
 bool CreateMPQ(std::string);
-bool ParseJsons(Maap*);
+bool ParseJsons(Maap*,int);
 bool ExtractMPQ(std::string);
 
 bool MainFunction( std::string path, Maap* pMaap, int count) {
