@@ -143,7 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="common.hpp" />
-    <ClInclude Include="connectFunc.h" />
+    <ClInclude Include="connectFunc.hpp" />
     <ClInclude Include="dbc.hpp" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
