@@ -28,7 +28,7 @@ bool CreateMPQ(std::string);
 bool ParseJsons(Maap*);
 bool ExtractMPQ(std::string);
 
-bool MainFunction(Maap* pMaap, std::string path = "error", int count) {
+bool MainFunction( std::string path, Maap* pMaap, int count) {
 
 	ParseJsons(pMaap, count);
 	ExtractMPQ(path);
@@ -46,7 +46,7 @@ bool MainFunction(Maap* pMaap, std::string path = "error", int count) {
 bool PatchCreate(Maap* pMaap, const char* path,int count)
 {
 	std::string spath = std::string(path);
-	return MainFunction(pMaap, spath, count);
+	return MainFunction( spath, pMaap, count);
 
 }
 
