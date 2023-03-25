@@ -7,7 +7,9 @@
     {
         int Key;
         int Value;
+        //int Count;
     };
 
-    extern "C" __declspec(dllexport) bool PatchCreate(Maap * pMaap,const char* a);
+    extern "C" __declspec(dllexport) bool PatchCreate(Maap * pMaap, const char* path, int count);
+    //extern "C" __declspec(dllimport) bool PatchCreate(Maap * pMaap, const char* path, int count);
 #endif

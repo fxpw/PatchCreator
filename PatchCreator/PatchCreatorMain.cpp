@@ -2,7 +2,7 @@
 //
 
 #include "pch.h"
-#include "connectFunc.h"
+#include "connectFunc.hpp"
 #include <StormLib.h>
 #include "common.hpp"
 #include "dbc.hpp"
@@ -28,10 +28,9 @@ bool CreateMPQ(std::string);
 bool ParseJsons(Maap*);
 bool ExtractMPQ(std::string);
 
-bool MainFunction(Maap* pMaap, std::string a = "error") {
+bool MainFunction(Maap* pMaap, std::string path = "error", int count) {
 
-	std::string path = a;
-	ParseJsons(pMaap);
+	ParseJsons(pMaap, count);
 	ExtractMPQ(path);
 
 	ChangeSpellDBC(path);
@@ -44,15 +43,15 @@ bool MainFunction(Maap* pMaap, std::string a = "error") {
 }
 
 
-bool PatchCreate(Maap* pMaap, const char* a)
+bool PatchCreate(Maap* pMaap, const char* path,int count)
 {
-	std::string news = std::string(a);
-	return MainFunction(pMaap, news);
+	std::string spath = std::string(path);
+	return MainFunction(pMaap, spath, count);
 
 }
 
-bool ParseJsons(Maap* pMaap) {
-	for (int i = 0; i < pMaap[0].Count; i++) {
+bool ParseJsons(Maap* pMaap, int count) {
+	for (int i = 0; i < count; i++) {
 		SpellChange[pMaap[i].Key] = pMaap[i].Value;
 	}
 	return true;
