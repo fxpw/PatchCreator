@@ -2,15 +2,12 @@
 //
 
 #include "pch.h"
-
-#include "connectFunc.hpp"
+#include "connectFunc.h"
 #include <StormLib.h>
 #include "common.hpp"
 #include "dbc.hpp"
 #include <iostream>
 #include <fstream>
-//#include <string>
-
 
 DBCFileLoader DBCSpell;
 DBCFileLoader DBCCreatureDusplayInfo;
@@ -32,6 +29,7 @@ bool ParseJsons(Maap*);
 bool ExtractMPQ(std::string);
 
 bool MainFunction(Maap* pMaap, std::string a = "error") {
+
 	std::string path = a;
 	ParseJsons(pMaap);
 	ExtractMPQ(path);
@@ -42,18 +40,19 @@ bool MainFunction(Maap* pMaap, std::string a = "error") {
 	ChangeSpellItemEnchantmentDBC(path);
 
 	return CreateMPQ(path);
+
 }
 
 
-bool PatchCreate(Maap* pMaap, const char* a) 
+bool PatchCreate(Maap* pMaap, const char* a)
 {
 	std::string news = std::string(a);
 	return MainFunction(pMaap, news);
+
 }
 
 bool ParseJsons(Maap* pMaap) {
-	int len = sizeof(pMaap) / sizeof(float);
-	for (int i = 0; i < len; i++) {
+	for (int i = 0; i < pMaap[0].Count; i++) {
 		SpellChange[pMaap[i].Key] = pMaap[i].Value;
 	}
 	return true;
@@ -91,6 +90,7 @@ bool ExtractMPQ(std::string path = "error") {
 		//std::cout << "SFileExtractFile SpellItemEnchantment.dbc" << std::endl;
 		SFileExtractFile(mpq, "DBFilesClient\\SpellItemEnchantment.dbc", ConverterToWChar("./SpellItemEnchantment.dbc"), SFILE_OPEN_FROM_MPQ);
 		//std::cout << SFileCloseArchive(mpq) << std::endl;
+		SFileCloseArchive(mpq);
 		return true;
 		//std::cout << "*****************************ExtractMPQ********************************\n";
 	}
@@ -246,7 +246,8 @@ bool CreateMPQ(std::string path = "error") {
 	try {
 		HANDLE mpq;
 		remove((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str());
-		SFileCreateArchive(ConverterToWChar((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str()), MPQ_CREATE_ATTRIBUTES + MPQ_CREATE_ARCHIVE_V2, 0x000000010, &mpq);
+		bool isSucsess = SFileCreateArchive(ConverterToWChar((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str()), MPQ_CREATE_ATTRIBUTES + MPQ_CREATE_ARCHIVE_V2, 0x000000010, &mpq);
+		if (!isSucsess) return false;
 		SFileAddFileEx(mpq, ConverterToWChar("./Spell.dbc"), "DBFilesClient\\Spell.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
 		remove("./Spell.dbc");
 		//std::cout << "added Spell.dbc" << std::endl;
