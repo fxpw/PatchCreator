@@ -45,8 +45,8 @@ bool MainFunction( std::string path, Maap* pMaap, int count) {
 
 bool PatchCreate(Maap* pMaap, const char* path,int count)
 {
-	std::string spath = std::string(path);
-	return MainFunction( spath, pMaap, count);
+	//std::string spath = std::string(path);
+	return MainFunction(std::string(path), pMaap, count);
 
 }
 
