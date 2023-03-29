@@ -43,7 +43,7 @@ bool MainFunction( std::string path, Maap* pMaap, int count) {
 }
 
 
-__declspec(dllexport) bool PatchCreate(Maap* pMaap, const char* path,int count)
+__declspec(dllexport) bool PatchCreate(const char* path, Maap* pMaap, int count)
 {
 	//std::string spath = std::string(path);
 	return MainFunction(std::string(path), pMaap, count);
