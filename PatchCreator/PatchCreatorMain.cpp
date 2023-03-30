@@ -28,7 +28,7 @@ bool CreateMPQ(std::string);
 bool ParseJsons(Maap*,int);
 bool ExtractMPQ(std::string);
 
-bool MainFunction( std::string path, Maap* pMaap, int count) {
+bool MainFunction(Maap* pMaap, int count, std::string path) {
 
 	ParseJsons(pMaap, count);
 	ExtractMPQ(path);
@@ -43,10 +43,10 @@ bool MainFunction( std::string path, Maap* pMaap, int count) {
 }
 
 
-__declspec(dllexport) bool PatchCreate(const char* path, Maap* pMaap, int count)
+__declspec(dllexport) bool PatchCreate(Maap* pMaap, int count, const char* a)
 {
 	//std::string spath = std::string(path);
-	return MainFunction(std::string(path), pMaap, count);
+	return MainFunction(pMaap, count, std::string(a));
 
 }
 
@@ -57,20 +57,13 @@ bool ParseJsons(Maap* pMaap, int count) {
 	return true;
 };
 
-wchar_t* ConverterToWChar(const char* orig) {
-	//const char* orig = "./patch-ruRU-4.mpq";
-	size_t newsize = strlen(orig) + 1;
-	wchar_t* wcstring = new wchar_t[newsize];
-
-	// Convert char* string to a wchar_t* string.
-	size_t convertedChars = 0;
-	mbstowcs_s(&convertedChars, wcstring, newsize, orig, _TRUNCATE);
-	// Display the result and indicate the type of string that it is.
-	//wcout << wcstring << L" (wchar_t *)" << endl;
-	//delete[] wcstring;
-
-
-	return wcstring;
+TCHAR* ConverterToTCHAR(const char* orig) {
+	TCHAR* tchar = 0;
+	std::string str = std::string(orig);
+	tchar = new TCHAR[str.size() + 1];
+	copy(str.begin(), str.end(), tchar);
+	tchar[str.size()] = 0;
+	return tchar;
 };
 
 
@@ -79,15 +72,16 @@ bool ExtractMPQ(std::string path = "error") {
 	//std::cout << "*****************************ExtractMPQ********************************\n";
 	HANDLE mpq;
 	//std::cout << "SFileOpenArchive start" << std::endl;
-	SFileOpenArchive(ConverterToWChar((path + std::string("/Data/ruRU/patch-ruRU-4.mpq")).c_str()), 0, STREAM_FLAG_WRITE_SHARE, &mpq);
+	bool isSuccess = SFileOpenArchive(ConverterToTCHAR((path + std::string("/Data/ruRU/patch-ruRU-4.mpq")).c_str()), 0, STREAM_FLAG_WRITE_SHARE, &mpq);
+	if (!isSuccess) return false;
 	// std::cout<< "SFileOpenArchive error " << GetLastError() << std::endl;
 	if (mpq) {
 		//std::cout << "SFileExtractFile Spell.dbc" << std::endl;
-		SFileExtractFile(mpq, "DBFilesClient\\Spell.dbc", ConverterToWChar("./Spell.dbc"), SFILE_OPEN_FROM_MPQ);
+		SFileExtractFile(mpq, "DBFilesClient\\Spell.dbc", ConverterToTCHAR("./Spell.dbc"), SFILE_OPEN_FROM_MPQ);
 		//std::cout << "SFileExtractFile ItemDisplayInfo.dbc" << std::endl;
-		SFileExtractFile(mpq, "DBFilesClient\\ItemDisplayInfo.dbc", ConverterToWChar("./ItemDisplayInfo.dbc"), SFILE_OPEN_FROM_MPQ);
+		SFileExtractFile(mpq, "DBFilesClient\\ItemDisplayInfo.dbc", ConverterToTCHAR("./ItemDisplayInfo.dbc"), SFILE_OPEN_FROM_MPQ);
 		//std::cout << "SFileExtractFile SpellItemEnchantment.dbc" << std::endl;
-		SFileExtractFile(mpq, "DBFilesClient\\SpellItemEnchantment.dbc", ConverterToWChar("./SpellItemEnchantment.dbc"), SFILE_OPEN_FROM_MPQ);
+		SFileExtractFile(mpq, "DBFilesClient\\SpellItemEnchantment.dbc", ConverterToTCHAR("./SpellItemEnchantment.dbc"), SFILE_OPEN_FROM_MPQ);
 		//std::cout << SFileCloseArchive(mpq) << std::endl;
 		SFileCloseArchive(mpq);
 		return true;
@@ -245,15 +239,22 @@ bool CreateMPQ(std::string path = "error") {
 	try {
 		HANDLE mpq;
 		remove((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str());
-		bool isSucsess = SFileCreateArchive(ConverterToWChar((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str()), MPQ_CREATE_ATTRIBUTES + MPQ_CREATE_ARCHIVE_V2, 0x000000010, &mpq);
-		if (!isSucsess) return false;
-		SFileAddFileEx(mpq, ConverterToWChar("./Spell.dbc"), "DBFilesClient\\Spell.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
+		bool isSucsess = SFileCreateArchive(ConverterToTCHAR((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str()), MPQ_CREATE_ATTRIBUTES + MPQ_CREATE_ARCHIVE_V2, 0x000000010, &mpq);
+		if (!isSucsess)
+		{
+			remove("./Spell.dbc");
+			remove("./ItemDisplayInfo.dbc");
+			remove("./SpellItemEnchantment.dbc");
+			return false;
+		}
+
+		SFileAddFileEx(mpq, ConverterToTCHAR("./Spell.dbc"), "DBFilesClient\\Spell.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
 		remove("./Spell.dbc");
 		//std::cout << "added Spell.dbc" << std::endl;
-		SFileAddFileEx(mpq, ConverterToWChar("./ItemDisplayInfo.dbc"), "DBFilesClient\\ItemDisplayInfo.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
+		SFileAddFileEx(mpq, ConverterToTCHAR("./ItemDisplayInfo.dbc"), "DBFilesClient\\ItemDisplayInfo.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
 		//std::cout << "added ItemDisplayInfo.dbc" << std::endl;
 		remove("./ItemDisplayInfo.dbc");
-		SFileAddFileEx(mpq, ConverterToWChar("./SpellItemEnchantment.dbc"), "DBFilesClient\\SpellItemEnchantment.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
+		SFileAddFileEx(mpq, ConverterToTCHAR("./SpellItemEnchantment.dbc"), "DBFilesClient\\SpellItemEnchantment.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
 		//std::cout << "added SpellItemEnchantment.dbc" << std::endl;
 		remove("./SpellItemEnchantment.dbc");
 		//std::cout << "End create MPQ" << std::endl;
