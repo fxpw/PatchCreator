@@ -2,7 +2,7 @@
 //
 
 #include "pch.h"
-#include "connectFunc.hpp"
+#include "PatchCreatorMain.hpp"
 #include <StormLib.h>
 #include "common.hpp"
 #include "dbc.hpp"
@@ -10,49 +10,43 @@
 #include <fstream>
 
 DBCFileLoader DBCSpell;
-DBCFileLoader DBCCreatureDusplayInfo;
 DBCFileLoader DBCItemDisplayInfo;
 DBCFileLoader DBCSpellItemEnchantment;
+DBCFileLoader DBCSpellVisual;
+DBCFileLoader DBCSpellVisualKit;
+DBCFileLoader DBCSpellVisualEffectName;
 
-std::map<uint32, uint32> SpellChange{};
+std::map<uint32, uint32> SpellMap{};
+std::map<uint32, uint32> ItemDisplayInfoMap{};
+std::map<uint32, uint32> SpellItemEnchantmentMap{};
+std::map<uint32, uint32> SpellVisualMap{};
+std::map<uint32, uint32> SpellVisualKitMap{};
+std::map<uint32, uint32> SpellVisualEffectNameMap{};
 
-std::map<uint32, uint32> CreatureDusplayInfoChange{};
-std::map<uint32, uint32> ItemDisplayInfoChange{};
-std::map<uint32, uint32> SpellItemEnchantmentChange{};
 
-bool ChangeSpellDBC(std::string);
-bool ChangeCreatureDisplayInfoDBC(std::string);
-bool ChangeItemDisplayInfoDBC(std::string);
-bool ChangeSpellItemEnchantmentDBC(std::string);
-bool CreateMPQ(std::string);
-bool ParseJsons(Maap*,int);
-bool ExtractMPQ(std::string);
+__declspec(dllexport) bool PatchCreate(Maap* pMaap, int count, const char* path)
+{
+	//std::string spath = std::string(path);
+	return MainFunction(pMaap, count, std::string(path));
 
-bool MainFunction(Maap* pMaap, int count, std::string path) {
+}
 
+bool MainFunction(Maap* pMaap, int count, std::string path)
+{
 	ParseJsons(pMaap, count);
 	ExtractMPQ(path);
 
 	ChangeSpellDBC(path);
-	ChangeCreatureDisplayInfoDBC(path);
 	ChangeItemDisplayInfoDBC(path);
 	ChangeSpellItemEnchantmentDBC(path);
 
-	return CreateMPQ(path);
-
-}
-
-
-__declspec(dllexport) bool PatchCreate(Maap* pMaap, int count, const char* a)
-{
-	//std::string spath = std::string(path);
-	return MainFunction(pMaap, count, std::string(a));
-
+	CreateMPQ(path);
+	return true;
 }
 
 bool ParseJsons(Maap* pMaap, int count) {
 	for (int i = 0; i < count; i++) {
-		SpellChange[pMaap[i].Key] = pMaap[i].Value;
+		SpellMap[pMaap[i].Key] = pMaap[i].Value;
 	}
 	return true;
 };
@@ -75,20 +69,25 @@ bool ExtractMPQ(std::string path = "error") {
 	bool isSuccess = SFileOpenArchive(ConverterToTCHAR((path + std::string("/Data/ruRU/patch-ruRU-4.mpq")).c_str()), 0, STREAM_FLAG_WRITE_SHARE, &mpq);
 	if (!isSuccess) return false;
 	// std::cout<< "SFileOpenArchive error " << GetLastError() << std::endl;
-	if (mpq) {
-		//std::cout << "SFileExtractFile Spell.dbc" << std::endl;
-		SFileExtractFile(mpq, "DBFilesClient\\Spell.dbc", ConverterToTCHAR("./Spell.dbc"), SFILE_OPEN_FROM_MPQ);
-		//std::cout << "SFileExtractFile ItemDisplayInfo.dbc" << std::endl;
-		SFileExtractFile(mpq, "DBFilesClient\\ItemDisplayInfo.dbc", ConverterToTCHAR("./ItemDisplayInfo.dbc"), SFILE_OPEN_FROM_MPQ);
-		//std::cout << "SFileExtractFile SpellItemEnchantment.dbc" << std::endl;
-		SFileExtractFile(mpq, "DBFilesClient\\SpellItemEnchantment.dbc", ConverterToTCHAR("./SpellItemEnchantment.dbc"), SFILE_OPEN_FROM_MPQ);
-		//std::cout << SFileCloseArchive(mpq) << std::endl;
-		SFileCloseArchive(mpq);
-		return true;
-		//std::cout << "*****************************ExtractMPQ********************************\n";
+	if (!mpq) {
+		return false;
 	}
-	return false;
+	//std::cout << "SFileExtractFile Spell.dbc" << std::endl;
+	SFileExtractFile(mpq, "DBFilesClient\\Spell.dbc", ConverterToTCHAR("./Spell.dbc"), SFILE_OPEN_FROM_MPQ);
+	//std::cout << "SFileExtractFile ItemDisplayInfo.dbc" << std::endl;
+	SFileExtractFile(mpq, "DBFilesClient\\ItemDisplayInfo.dbc", ConverterToTCHAR("./ItemDisplayInfo.dbc"), SFILE_OPEN_FROM_MPQ);
+	//std::cout << "SFileExtractFile SpellItemEnchantment.dbc" << std::endl;
+	SFileExtractFile(mpq, "DBFilesClient\\SpellItemEnchantment.dbc", ConverterToTCHAR("./SpellItemEnchantment.dbc"), SFILE_OPEN_FROM_MPQ);
+	//std::cout << SFileCloseArchive(mpq) << std::endl;
+	SFileCloseArchive(mpq);
+	return true;
+		//std::cout << "*****************************ExtractMPQ********************************\n";
+	
 };
+
+
+
+
 
 bool ChangeSpellDBC(std::string path = "error") {
 	//try {//std::cout << "*****************************ChangeSpellDBC********************************\n";
@@ -124,10 +123,10 @@ bool ChangeSpellDBC(std::string path = "error") {
 			std::string spellName(spellNameGetet);
 			uint32 spellVisualID = record.getUInt32(131);
 
-			if (SpellChange.count(spellid)) {
-				// std::cout<< "spellid->("<< spellid <<") spellname->("<< spellName <<") SpellChange->("<< spellVisualID<<") changed SpellChange to " << SpellChange[spellVisualID]<< std::endl;
-				// std::cout<< "spell id- > "<<spellid << "  spell visual -> " << spellVisualID << " changed to "<< SpellChange[spellid] << std::endl;
-				record.setUInt32(131, SpellChange[spellid]);
+			if (SpellMap.count(spellid)) {
+				// std::cout<< "spellid->("<< spellid <<") spellname->("<< spellName <<") SpellMap->("<< spellVisualID<<") changed SpellMap to " << SpellMap[spellVisualID]<< std::endl;
+				// std::cout<< "spell id- > "<<spellid << "  spell visual -> " << spellVisualID << " changed to "<< SpellMap[spellid] << std::endl;
+				record.setUInt32(131, SpellMap[spellid]);
 			}
 		}
 
@@ -138,21 +137,12 @@ bool ChangeSpellDBC(std::string path = "error") {
 		//std::cout << "./DBFilesClient/Spell.dbc" << " -> Spell.dbc: OK." << "\n\n";
 		//std::cout << "****************************ChangeSpellDBC**********************************\n\n\n";
 		return true;
-	}
-	else
-	{
+	}else{
 		return false;
 	}
 
 }
 
-bool ChangeCreatureDisplayInfoDBC(std::string path = "error") {
-	//std::cout << "******************************ChangeCreatureDisplayInfoDBC********************************\n";
-		//std::cout << "CreatureDusplayInfo.dbc format:\n";
-	DBCCreatureDusplayInfo.Load("./CreatureDisplayInfo.dbc");
-	//std::cout << "******************************ChangeCreatureDisplayInfoDBC**************************\n\n\n";
-	return true;
-};
 
 bool ChangeItemDisplayInfoDBC(std::string path = "error") {
 	//std::cout << "*****************************ChangeItemDisplayInfoDBC********************************\n";
@@ -161,9 +151,7 @@ bool ChangeItemDisplayInfoDBC(std::string path = "error") {
 	if (!DBCItemDisplayInfo.getNumFields()) {
 		//std::cout << "ERROR: Can not open file: " << "./DBFilesClient/ItemDisplayInfo.dbc" << std::endl;
 		return false;
-	}
-	else
-	{
+	}else{
 		//std::cout << "./DBFilesClient/ItemDisplayInfo.dbc" << " - Opened successful." << std::endl << "./DBFilesClient/ItemDisplayInfo.dbc" << " - fields: "
 			//<< DBCItemDisplayInfo.getNumFields() << ", rows: " << DBCItemDisplayInfo.getNumRows() << std::endl;
 	}
@@ -188,9 +176,7 @@ bool ChangeItemDisplayInfoDBC(std::string path = "error") {
 		//std::cout << "./DBFilesClient/ItemDisplayInfo.dbc" << " -> ItemDisplayInfo.dbc: OK." << "\n\n";
 		//std::cout << "**********************************ChangeItemDisplayInfoDBC*****************************\n\n\n";
 		return true;
-	}
-	else
-	{
+	}else{
 		return false;
 	}
 }
@@ -202,8 +188,7 @@ bool ChangeSpellItemEnchantmentDBC(std::string path = "error") {
 	if (!DBCSpellItemEnchantment.getNumFields()) {
 		//std::cout << "ERROR: Can not open file: " << "./DBFilesClient/SpellItemEnchantment.dbc" << std::endl;
 		return false;
-	}
-	else {
+	}else{
 		//std::cout << "./DBFilesClient/SpellItemEnchantment.dbc" << " - Opened successful." << std::endl << "./DBFilesClient/SpellItemEnchantment.dbc" << " - fields: "
 			//<< DBCSpellItemEnchantment.getNumFields() << ", rows: " << DBCSpellItemEnchantment.getNumRows() << std::endl;
 	}
@@ -226,9 +211,7 @@ bool ChangeSpellItemEnchantmentDBC(std::string path = "error") {
 		//std::cout << "./DBFilesClient/SpellItemEnchantment.dbc" << " -> SpellItemEnchantment.dbc: OK." << "\n\n";
 		//std::cout << "***********************************ChangeSpellItemEnchantmentDBC*******************************\n\n\n";
 		return true;
-	}
-	else
-	{
+	}else{
 		return false;
 	}
 }
@@ -240,8 +223,7 @@ bool CreateMPQ(std::string path = "error") {
 		HANDLE mpq;
 		remove((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str());
 		bool isSucsess = SFileCreateArchive(ConverterToTCHAR((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str()), MPQ_CREATE_ATTRIBUTES + MPQ_CREATE_ARCHIVE_V2, 0x000000010, &mpq);
-		if (!isSucsess)
-		{
+		if (!isSucsess){
 			remove("./Spell.dbc");
 			remove("./ItemDisplayInfo.dbc");
 			remove("./SpellItemEnchantment.dbc");
@@ -260,8 +242,7 @@ bool CreateMPQ(std::string path = "error") {
 		//std::cout << "End create MPQ" << std::endl;
 		return SFileCloseArchive(mpq);
 		//std::cout << "*********************************CreateMPQ**********************************\n\n\n";
-	}
-	catch (...) {
+	}catch (...) {
 		return false;
 	}
 };
