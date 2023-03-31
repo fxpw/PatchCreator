@@ -221,8 +221,8 @@ bool CreateMPQ(std::string path = "error") {
 	//std::cout << "**********************************CreateMPQ************************************\n\n\n";
 	try {
 		HANDLE mpq;
-		remove((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str());
-		bool isSucsess = SFileCreateArchive(ConverterToTCHAR((path + std::string("/Data/ruRU/patch-ruRU-x.mpq")).c_str()), MPQ_CREATE_ATTRIBUTES + MPQ_CREATE_ARCHIVE_V2, 0x000000010, &mpq);
+		remove((path + std::string("/Data/ruRU/patch-ruRU-[.mpq")).c_str());
+		bool isSucsess = SFileCreateArchive(ConverterToTCHAR((path + std::string("/Data/ruRU/patch-ruRU-[.mpq")).c_str()), MPQ_CREATE_ATTRIBUTES + MPQ_CREATE_ARCHIVE_V2, 0x000000010, &mpq);
 		if (!isSucsess){
 			remove("./Spell.dbc");
 			remove("./ItemDisplayInfo.dbc");
