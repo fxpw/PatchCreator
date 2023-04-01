@@ -1,4 +1,4 @@
-﻿// dllmain.cpp : Определяет точку входа для приложения DLL.
+﻿// dllmain.cpp : Specifies the entry point for a DLL application.
 #include "pch.h"
 
 BOOL APIENTRY DllMain( HMODULE hModule,

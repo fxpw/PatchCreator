@@ -3,26 +3,25 @@
     #include <string>
     #include <map>
 
-    struct Maap
+    struct JsonMap
     {
         int Key;
         int Value;
     };
 
-    extern "C" __declspec(dllexport) bool PatchCreate(Maap * pMaap, int count, const char* path);
+    extern "C" __declspec(dllexport) bool PatchCreate(JsonMap * spellMap, int spellMapCount, JsonMap * spellVusualKitMap, int spellVusualKitCount, const char* path);
 
-    bool MainFunction(Maap* pMaap, int count, std::string path);
+    bool MainFunction(JsonMap* spellMap, int spellMapCount, JsonMap* spellVusualKitMap, int spellVusualKitCount, std::string path);
+    bool ExtractMPQ(std::string);
+    bool ParseJsons(JsonMap*, int, JsonMap*, int);
 
     TCHAR* ConverterToTCHAR(const char* orig);
-
-    bool ChangeSpellDBC(std::string);
-    bool ChangeItemDisplayInfoDBC(std::string);
-    bool ChangeSpellItemEnchantmentDBC(std::string);
-    bool ChangeSpellVisualDBC(std::string);
-    bool ChangeSpellVisualKitDBC(std::string);
-    bool ChangeSpellVisualEffectNameDBC(std::string);
+    bool ChangeSpellDBC();
+    bool ChangeItemDisplayInfoDBC();
+    bool ChangeSpellItemEnchantmentDBC();
+    //bool ChangeSpellVisualDBC();
+    bool ChangeSpellVisualKitDBC();
+    //bool ChangeSpellVisualEffectNameDBC();
     bool CreateMPQ(std::string);
-    bool ParseJsons(Maap*, int);
-    bool ExtractMPQ(std::string);
-    //extern "C" __declspec(dllimport) bool PatchCreate(Maap * pMaap, const char* path, int count);
+
 #endif

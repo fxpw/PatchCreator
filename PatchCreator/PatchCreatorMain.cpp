@@ -1,4 +1,4 @@
-// PatchCreatorDll.cpp : Определяет функции для статической библиотеки.
+// PatchCreatorDll.cpp : Defines functions for a static library.
 //
 
 #include "pch.h"
@@ -12,42 +12,80 @@
 DBCFileLoader DBCSpell;
 DBCFileLoader DBCItemDisplayInfo;
 DBCFileLoader DBCSpellItemEnchantment;
-DBCFileLoader DBCSpellVisual;
+//DBCFileLoader DBCSpellVisual;
 DBCFileLoader DBCSpellVisualKit;
-DBCFileLoader DBCSpellVisualEffectName;
+//DBCFileLoader DBCSpellVisualEffectName;
 
 std::map<uint32, uint32> SpellMap{};
 std::map<uint32, uint32> ItemDisplayInfoMap{};
 std::map<uint32, uint32> SpellItemEnchantmentMap{};
-std::map<uint32, uint32> SpellVisualMap{};
+//std::map<uint32, uint32> SpellVisualMap{};
 std::map<uint32, uint32> SpellVisualKitMap{};
-std::map<uint32, uint32> SpellVisualEffectNameMap{};
+//std::map<uint32, uint32> SpellVisualEffectNameMap{};
 
 
-__declspec(dllexport) bool PatchCreate(Maap* pMaap, int count, const char* path)
+__declspec(dllexport) bool PatchCreate(JsonMap* spellMap, int spellMapCount, JsonMap* spellVusualKitMap, int spellVusualKitCount, const char* path)
 {
 	//std::string spath = std::string(path);
-	return MainFunction(pMaap, count, std::string(path));
+	return MainFunction(spellMap, spellMapCount, spellVusualKitMap, spellVusualKitCount, std::string(path));
 
 }
 
-bool MainFunction(Maap* pMaap, int count, std::string path)
+bool MainFunction(JsonMap* spellMap, int spellMapCount, JsonMap* spellVusualKitMap, int spellVusualKitCount, std::string path)
 {
-	ParseJsons(pMaap, count);
+	ParseJsons(spellMap, spellMapCount);
 	ExtractMPQ(path);
 
-	ChangeSpellDBC(path);
-	ChangeItemDisplayInfoDBC(path);
-	ChangeSpellItemEnchantmentDBC(path);
-
+	ChangeSpellDBC();
+	ChangeItemDisplayInfoDBC();
+	ChangeSpellItemEnchantmentDBC();
+	ChangeSpellVisualKitDBC();
 	CreateMPQ(path);
 	return true;
 }
 
-bool ParseJsons(Maap* pMaap, int count) {
-	for (int i = 0; i < count; i++) {
-		SpellMap[pMaap[i].Key] = pMaap[i].Value;
-	}
+bool ParseJsons(JsonMap* spellMap, int spellMapCount, JsonMap* spellVusualKitMap, int spellVusualKitCount) {
+	#pragma region SpellMap
+		for (int i = 0; i < spellMapCount; i++) {
+			SpellMap[spellMap[i].Key] = spellMap[i].Value;
+		}
+	#pragma endregion
+
+	#pragma region SpellVisualKitMap
+		for (int i = 0; i < spellVusualKitCount; i++) {
+			SpellMap[spellVusualKitMap[i].Key] = spellVusualKitMap[i].Value;
+		}
+		//SpellVisualKitMap[28] = 0;
+		//SpellVisualKitMap[34] = 0;
+		//SpellVisualKitMap[35] = 0;
+		//SpellVisualKitMap[58] = 0;
+		//SpellVisualKitMap[97] = 0;
+		//SpellVisualKitMap[98] = 0;
+		//SpellVisualKitMap[116] = 0;
+		//SpellVisualKitMap[117] = 0;
+		//SpellVisualKitMap[122] = 0;
+		//SpellVisualKitMap[163] = 0;
+		//SpellVisualKitMap[179] = 0;
+		//SpellVisualKitMap[181] = 0;
+		//SpellVisualKitMap[187] = 0;
+		//SpellVisualKitMap[191] = 0;
+		//SpellVisualKitMap[192] = 0;
+		//SpellVisualKitMap[193] = 0;
+		//SpellVisualKitMap[194] = 0;
+		//SpellVisualKitMap[200] = 0;
+		//SpellVisualKitMap[214] = 0;
+		//SpellVisualKitMap[215] = 0;
+		//SpellVisualKitMap[220] = 0;
+		//SpellVisualKitMap[261] = 0;
+		//SpellVisualKitMap[262] = 0;
+		//SpellVisualKitMap[265] = 0;
+		//SpellVisualKitMap[340] = 0;
+		//SpellVisualKitMap[624] = 0;
+		//SpellVisualKitMap[1091] = 0;
+		//SpellVisualKitMap[1092] = 0;
+		//SpellVisualKitMap[2575] = 0;
+		//SpellVisualKitMap[6173] = 0;
+	#pragma endregion
 	return true;
 };
 
@@ -63,45 +101,36 @@ TCHAR* ConverterToTCHAR(const char* orig) {
 
 bool ExtractMPQ(std::string path = "error") {
 
-	//std::cout << "*****************************ExtractMPQ********************************\n";
 	HANDLE mpq;
-	//std::cout << "SFileOpenArchive start" << std::endl;
+
 	bool isSuccess = SFileOpenArchive(ConverterToTCHAR((path + std::string("/Data/ruRU/patch-ruRU-4.mpq")).c_str()), 0, STREAM_FLAG_WRITE_SHARE, &mpq);
 	if (!isSuccess) return false;
-	// std::cout<< "SFileOpenArchive error " << GetLastError() << std::endl;
+
 	if (!mpq) {
 		return false;
 	}
-	//std::cout << "SFileExtractFile Spell.dbc" << std::endl;
+
 	SFileExtractFile(mpq, "DBFilesClient\\Spell.dbc", ConverterToTCHAR("./Spell.dbc"), SFILE_OPEN_FROM_MPQ);
-	//std::cout << "SFileExtractFile ItemDisplayInfo.dbc" << std::endl;
+
 	SFileExtractFile(mpq, "DBFilesClient\\ItemDisplayInfo.dbc", ConverterToTCHAR("./ItemDisplayInfo.dbc"), SFILE_OPEN_FROM_MPQ);
-	//std::cout << "SFileExtractFile SpellItemEnchantment.dbc" << std::endl;
+
 	SFileExtractFile(mpq, "DBFilesClient\\SpellItemEnchantment.dbc", ConverterToTCHAR("./SpellItemEnchantment.dbc"), SFILE_OPEN_FROM_MPQ);
-	//std::cout << SFileCloseArchive(mpq) << std::endl;
+
+	SFileExtractFile(mpq, "DBFilesClient\\SpellVisualKit.dbc", ConverterToTCHAR("./SpellVisualKit.dbc"), SFILE_OPEN_FROM_MPQ);
+
 	SFileCloseArchive(mpq);
 	return true;
-		//std::cout << "*****************************ExtractMPQ********************************\n";
 	
 };
 
 
 
+bool ChangeSpellDBC() {
 
-
-bool ChangeSpellDBC(std::string path = "error") {
-	//try {//std::cout << "*****************************ChangeSpellDBC********************************\n";
-		//std::cout << "Spell.dbc format:\n";
 	DBCSpell.Load("./Spell.dbc");
 	if (!DBCSpell.getNumFields()) {
-		//std::cout << "ERROR: Can not open file: " << "./DBFilesClient/Spell.dbc" << std::endl;
 		return false;
 	}
-	else {
-		//std::cout << "./DBFilesClient/Spell.dbc" << " - Opened successful." << std::endl << "./DBFilesClient/Spell.dbc" << " - fields: "
-			//<< DBCSpell.getNumFields() << ", rows: " << DBCSpell.getNumRows() << std::endl;
-	}
-	//std::cout << "./DBFilesClient/Spell.dbc" << " - DBC format: OK." << "\n";
 
 	FILE* npf;
 	errno_t err = fopen_s(&npf, "./Spell.dbc", "wb");
@@ -124,8 +153,6 @@ bool ChangeSpellDBC(std::string path = "error") {
 			uint32 spellVisualID = record.getUInt32(131);
 
 			if (SpellMap.count(spellid)) {
-				// std::cout<< "spellid->("<< spellid <<") spellname->("<< spellName <<") SpellMap->("<< spellVisualID<<") changed SpellMap to " << SpellMap[spellVisualID]<< std::endl;
-				// std::cout<< "spell id- > "<<spellid << "  spell visual -> " << spellVisualID << " changed to "<< SpellMap[spellid] << std::endl;
 				record.setUInt32(131, SpellMap[spellid]);
 			}
 		}
@@ -134,8 +161,7 @@ bool ChangeSpellDBC(std::string path = "error") {
 		fwrite(DBCSpell.stringTable, DBCSpell.stringSize, 0, npf);
 
 		fclose(npf);
-		//std::cout << "./DBFilesClient/Spell.dbc" << " -> Spell.dbc: OK." << "\n\n";
-		//std::cout << "****************************ChangeSpellDBC**********************************\n\n\n";
+
 		return true;
 	}else{
 		return false;
@@ -144,20 +170,15 @@ bool ChangeSpellDBC(std::string path = "error") {
 }
 
 
-bool ChangeItemDisplayInfoDBC(std::string path = "error") {
-	//std::cout << "*****************************ChangeItemDisplayInfoDBC********************************\n";
-	//std::cout << "ItemDisplayInfo.dbc format:\n";
+bool ChangeItemDisplayInfoDBC() {
+
 	DBCItemDisplayInfo.Load("./ItemDisplayInfo.dbc");
 	if (!DBCItemDisplayInfo.getNumFields()) {
-		//std::cout << "ERROR: Can not open file: " << "./DBFilesClient/ItemDisplayInfo.dbc" << std::endl;
+
 		return false;
-	}else{
-		//std::cout << "./DBFilesClient/ItemDisplayInfo.dbc" << " - Opened successful." << std::endl << "./DBFilesClient/ItemDisplayInfo.dbc" << " - fields: "
-			//<< DBCItemDisplayInfo.getNumFields() << ", rows: " << DBCItemDisplayInfo.getNumRows() << std::endl;
 	}
 	for (uint32 i = 0; i < DBCItemDisplayInfo.recordCount; i++) {
 		auto record = DBCItemDisplayInfo.getRecord(i);
-
 		record.setUInt32(23, 0);
 		record.setUInt32(11, 0);
 
@@ -173,24 +194,17 @@ bool ChangeItemDisplayInfoDBC(std::string path = "error") {
 		fwrite(DBCItemDisplayInfo.data, DBCItemDisplayInfo.recordSize * DBCItemDisplayInfo.recordCount + DBCItemDisplayInfo.stringSize, 1, npf);
 		fwrite(DBCItemDisplayInfo.stringTable, DBCItemDisplayInfo.stringSize, 0, npf);
 		fclose(npf);
-		//std::cout << "./DBFilesClient/ItemDisplayInfo.dbc" << " -> ItemDisplayInfo.dbc: OK." << "\n\n";
-		//std::cout << "**********************************ChangeItemDisplayInfoDBC*****************************\n\n\n";
 		return true;
 	}else{
 		return false;
 	}
 }
 
-bool ChangeSpellItemEnchantmentDBC(std::string path = "error") {
-	//std::cout << "**************************ChangeSpellItemEnchantmentDBC****************************\n";
-	//std::cout << "SpellItemEnchantment.dbc format:\n";
+bool ChangeSpellItemEnchantmentDBC() {
+
 	DBCSpellItemEnchantment.Load("./SpellItemEnchantment.dbc");
 	if (!DBCSpellItemEnchantment.getNumFields()) {
-		//std::cout << "ERROR: Can not open file: " << "./DBFilesClient/SpellItemEnchantment.dbc" << std::endl;
 		return false;
-	}else{
-		//std::cout << "./DBFilesClient/SpellItemEnchantment.dbc" << " - Opened successful." << std::endl << "./DBFilesClient/SpellItemEnchantment.dbc" << " - fields: "
-			//<< DBCSpellItemEnchantment.getNumFields() << ", rows: " << DBCSpellItemEnchantment.getNumRows() << std::endl;
 	}
 	for (uint32 i = 0; i < DBCSpellItemEnchantment.recordCount; i++) {
 		auto record = DBCSpellItemEnchantment.getRecord(i);
@@ -208,17 +222,43 @@ bool ChangeSpellItemEnchantmentDBC(std::string path = "error") {
 		fwrite(DBCSpellItemEnchantment.data, DBCSpellItemEnchantment.recordSize * DBCSpellItemEnchantment.recordCount + DBCSpellItemEnchantment.stringSize, 1, npf);
 		fwrite(DBCSpellItemEnchantment.stringTable, DBCSpellItemEnchantment.stringSize, 0, npf);
 		fclose(npf);
-		//std::cout << "./DBFilesClient/SpellItemEnchantment.dbc" << " -> SpellItemEnchantment.dbc: OK." << "\n\n";
-		//std::cout << "***********************************ChangeSpellItemEnchantmentDBC*******************************\n\n\n";
 		return true;
 	}else{
 		return false;
 	}
 }
 
+bool ChangeSpellVisualKitDBC() {
+	DBCSpellVisualKit.Load("./SpellVisualKit.dbc");
+	if (!DBCSpellVisualKit.getNumFields()) { return false; };
+	for (uint32 i = 0; i < DBCSpellVisualKit.recordCount; i++) {
+
+		if (SpellVisualKitMap.count(i)) {
+			auto record = DBCSpellVisualKit.getRecord(i);
+			record.setInt32(6, 0);
+			record.setInt32(7, 0);
+		}
+	}
+	FILE* npf;
+	errno_t err = fopen_s(&npf, "./SpellItemEnchantment.dbc", "wb");
+	if (err == 0) {
+		fwrite(&DBCSpellVisualKit.header, 4, 1, npf);
+		fwrite(&DBCSpellVisualKit.recordCount, 4, 1, npf);
+		fwrite(&DBCSpellVisualKit.fieldCount, 4, 1, npf);
+		fwrite(&DBCSpellVisualKit.recordSize, 4, 1, npf);
+		fwrite(&DBCSpellVisualKit.stringSize, 4, 1, npf);
+		fwrite(DBCSpellVisualKit.data, DBCSpellVisualKit.recordSize * DBCSpellVisualKit.recordCount + DBCSpellVisualKit.stringSize, 1, npf);
+		fwrite(DBCSpellVisualKit.stringTable, DBCSpellVisualKit.stringSize, 0, npf);
+		fclose(npf);
+		return true;
+	}
+	else {
+		return false;
+	}
+	return true;
+}
 
 bool CreateMPQ(std::string path = "error") {
-	//std::cout << "**********************************CreateMPQ************************************\n\n\n";
 	try {
 		HANDLE mpq;
 		remove((path + std::string("/Data/ruRU/patch-ruRU-[.mpq")).c_str());
@@ -227,21 +267,24 @@ bool CreateMPQ(std::string path = "error") {
 			remove("./Spell.dbc");
 			remove("./ItemDisplayInfo.dbc");
 			remove("./SpellItemEnchantment.dbc");
+			remove("./SpellVisualKit.dbc");
 			return false;
 		}
 
 		SFileAddFileEx(mpq, ConverterToTCHAR("./Spell.dbc"), "DBFilesClient\\Spell.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
 		remove("./Spell.dbc");
-		//std::cout << "added Spell.dbc" << std::endl;
+
 		SFileAddFileEx(mpq, ConverterToTCHAR("./ItemDisplayInfo.dbc"), "DBFilesClient\\ItemDisplayInfo.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
-		//std::cout << "added ItemDisplayInfo.dbc" << std::endl;
 		remove("./ItemDisplayInfo.dbc");
+		
 		SFileAddFileEx(mpq, ConverterToTCHAR("./SpellItemEnchantment.dbc"), "DBFilesClient\\SpellItemEnchantment.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
-		//std::cout << "added SpellItemEnchantment.dbc" << std::endl;
 		remove("./SpellItemEnchantment.dbc");
-		//std::cout << "End create MPQ" << std::endl;
+
+		SFileAddFileEx(mpq, ConverterToTCHAR("./SpellVisualKit.dbc"), "DBFilesClient\\SpellVisualKit.dbc", MPQ_FILE_COMPRESS + MPQ_FILE_REPLACEEXISTING, MPQ_COMPRESSION_ZLIB, MPQ_COMPRESSION_NEXT_SAME);
+		remove("./SpellVisualKit.dbc");
+
 		return SFileCloseArchive(mpq);
-		//std::cout << "*********************************CreateMPQ**********************************\n\n\n";
+
 	}catch (...) {
 		return false;
 	}
