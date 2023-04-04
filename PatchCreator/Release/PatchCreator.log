@@ -1,0 +1,9 @@
+﻿  pch.cpp
+  dllmain.cpp
+  PatchCreatorMain.cpp
+     Создается библиотека C:\Users\lopji\Desktop\PatchCreator-master\Release\PatchCreator.lib и объект C:\Users\lopji\Desktop\PatchCreator-master\Release\PatchCreator.exp
+  Создание кода
+  Previous IPDB not found, fall back to full compilation.
+  All 236 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Создание кода завершено
+  PatchCreator.vcxproj -> C:\Users\lopji\Desktop\PatchCreator-master\Release\PatchCreator.dll

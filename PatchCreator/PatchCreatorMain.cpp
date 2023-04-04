@@ -33,15 +33,15 @@ __declspec(dllexport) bool PatchCreate(JsonMap* spellMap, int spellMapCount, Jso
 
 bool MainFunction(JsonMap* spellMap, int spellMapCount, JsonMap* spellVusualKitMap, int spellVusualKitCount, std::string path)
 {
-	ParseJsons(spellMap, spellMapCount);
-	ExtractMPQ(path);
+	ParseJsons(spellMap, spellMapCount, spellVusualKitMap, spellVusualKitCount);
+	bool isSuccess = ExtractMPQ(path);
+	if (!isSuccess) return false;
 
 	ChangeSpellDBC();
 	ChangeItemDisplayInfoDBC();
 	ChangeSpellItemEnchantmentDBC();
 	ChangeSpellVisualKitDBC();
-	CreateMPQ(path);
-	return true;
+	return CreateMPQ(path);
 }
 
 bool ParseJsons(JsonMap* spellMap, int spellMapCount, JsonMap* spellVusualKitMap, int spellVusualKitCount) {
@@ -53,7 +53,7 @@ bool ParseJsons(JsonMap* spellMap, int spellMapCount, JsonMap* spellVusualKitMap
 
 	#pragma region SpellVisualKitMap
 		for (int i = 0; i < spellVusualKitCount; i++) {
-			SpellMap[spellVusualKitMap[i].Key] = spellVusualKitMap[i].Value;
+			SpellVisualKitMap[spellVusualKitMap[i].Key] = spellVusualKitMap[i].Value;
 		}
 		//SpellVisualKitMap[28] = 0;
 		//SpellVisualKitMap[34] = 0;
@@ -233,14 +233,17 @@ bool ChangeSpellVisualKitDBC() {
 	if (!DBCSpellVisualKit.getNumFields()) { return false; };
 	for (uint32 i = 0; i < DBCSpellVisualKit.recordCount; i++) {
 
-		if (SpellVisualKitMap.count(i)) {
-			auto record = DBCSpellVisualKit.getRecord(i);
+		auto record = DBCSpellVisualKit.getRecord(i);
+		int spellid = record.getInt32(0);
+
+		if (SpellVisualKitMap.count(spellid)) {
+
 			record.setInt32(6, 0);
 			record.setInt32(7, 0);
 		}
 	}
 	FILE* npf;
-	errno_t err = fopen_s(&npf, "./SpellItemEnchantment.dbc", "wb");
+	errno_t err = fopen_s(&npf, "./SpellVisualKit.dbc", "wb");
 	if (err == 0) {
 		fwrite(&DBCSpellVisualKit.header, 4, 1, npf);
 		fwrite(&DBCSpellVisualKit.recordCount, 4, 1, npf);
