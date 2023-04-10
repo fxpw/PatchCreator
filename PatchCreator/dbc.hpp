@@ -121,12 +121,17 @@ public:
             assert(stringOffset < file.stringSize);
             return reinterpret_cast<char*>(file.stringTable + stringOffset);
         }
-        void setString(size_t field, char* newString) const
+        //! if u change pointner then all string at same change too
+        void setString(size_t field, const char* newString)
         {
             assert(field < file.fieldCount);
+            assert(newString != nullptr); // make sure the new string is not null
+
             size_t stringOffset = getUInt32(field);
             assert(stringOffset < file.stringSize);
-            *reinterpret_cast<char**>(file.stringTable + stringOffset) = newString;
+
+            char* stringTablePtr = reinterpret_cast<char*>(file.stringTable + stringOffset);
+            strcpy(stringTablePtr, newString);
         }
         //!**********************************************
 
