@@ -33,6 +33,8 @@ public:
     ~DBCFileLoader() {
         if (data)
             delete[] data;
+        if (stringTable)
+            delete[] stringTable;
     }
 
     bool Load(char const* filename) {
@@ -62,17 +64,17 @@ public:
             return false;
         //std::cout << stringSize << " stringSize \n";
         //std::cout << recordSize * recordCount + stringSize << " data size" << "\n";
-        data = new unsigned char[recordSize * recordCount + stringSize]; // data unsigned char*[]
+        data = new unsigned char[recordSize * recordCount]; // data unsigned char*[]
 
-        stringTable = data + recordSize * recordCount;
+        stringTable = new unsigned char[stringSize];
 
 
         if (!data || !stringTable)
             return false;
-        if (fread(data, recordSize * recordCount + stringSize, 1, pf) != 1)
+        if (fread(data, recordSize * recordCount, 1, pf) != 1)
             return false;
-
-        fread(stringTable, stringSize, 1, pf);
+        if (fread(stringTable, stringSize, 1, pf) != 1)
+            return false;
 
         fclose(pf);
 
