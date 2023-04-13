@@ -44,7 +44,7 @@ public:
         if (err != 0)
             return false;
 
-        if (fread(&header, 4, 1, pf) != 1) // первые 4 это хедер
+        if (fread(&header, 4, 1, pf) != 1) // пїЅпїЅпїЅпїЅпїЅпїЅ 4 пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             return false;
         if (header != WDBC_HEADER)
             return false;
@@ -58,7 +58,7 @@ public:
         if (fread(&recordSize, 4, 1, pf) != 1) // 4 Size of a record
             return false;
         //std::cout << recordSize << " recordSize \n";
-        if (fread(&stringSize, 4, 1, pf) != 1) // 5 String size это сколько выделяется на стрингу
+        if (fread(&stringSize, 4, 1, pf) != 1) // 5 String size пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             return false;
         //std::cout << stringSize << " stringSize \n";
         //std::cout << recordSize * recordCount + stringSize << " data size" << "\n";
@@ -134,6 +134,17 @@ public:
             strcpy(stringTablePtr, newString);
         }
         //!**********************************************
+        void addString(size_t field, const char* newString)
+        {
+            size_t startOffset = file.stringSize;
+            setUInt32(field, startOffset);
+
+            file.stringSize += strlen(newString) + 1;
+            file.stringTable = reinterpret_cast<unsigned char*>(realloc(file.stringTable, file.stringSize));
+
+            char* stringTablePtr = reinterpret_cast<char*>(file.stringTable + startOffset);
+            strcpy(stringTablePtr, newString);
+        }
 
     private:
         Record(DBCFileLoader& file, unsigned char* offset) : file(file), offset(offset) {}
