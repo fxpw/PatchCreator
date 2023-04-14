@@ -46,7 +46,7 @@ public:
         if (err != 0)
             return false;
 
-        if (fread(&header, 4, 1, pf) != 1) // ������ 4 ��� �����
+        if (fread(&header, 4, 1, pf) != 1)
             return false;
         if (header != WDBC_HEADER)
             return false;
@@ -60,7 +60,7 @@ public:
         if (fread(&recordSize, 4, 1, pf) != 1) // 4 Size of a record
             return false;
         //std::cout << recordSize << " recordSize \n";
-        if (fread(&stringSize, 4, 1, pf) != 1) // 5 String size ��� ������� ���������� �� �������
+        if (fread(&stringSize, 4, 1, pf) != 1) // 5 String size
             return false;
         //std::cout << stringSize << " stringSize \n";
         //std::cout << recordSize * recordCount + stringSize << " data size" << "\n";
@@ -161,6 +161,20 @@ public:
         assert(data);
         return Record(*this, data + id * recordSize);
     };
+
+    Record allocateNewRecord()
+    {
+        size_t id = recordCount++;
+        data = reinterpret_cast<unsigned char*>(realloc(data, recordCount * recordSize));
+        memset(data + id * recordSize, 0, recordSize);
+
+        Record newRecord(*this, data + id * recordSize);
+        uint32 newId = getRecord(id - 1).getUInt32(0) + 1;
+        newRecord.setUInt32(0, newId);
+
+        return newRecord;
+    }
+
     uint32 getNumRows() const { return recordCount; }
     uint32 getNumFields() const { return fieldCount; }
 
