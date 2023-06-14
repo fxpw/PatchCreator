@@ -1,3 +1,5 @@
-.vs/**/
-Release/*
-PatchCreator/Release/*
+.vs/**
+Release/**
+PatchCreator/Release/**
+Debug/**
+PatchCreator/Debug/**

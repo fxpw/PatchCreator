@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Файлы заголовков\include">
+      <UniqueIdentifier>{2a725e20-832d-4940-96ed-f906280c15b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\include\structures">
+      <UniqueIdentifier>{21eda9a9-ff62-48ca-ba91-3e6a404781da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\include\structures\dbc">
+      <UniqueIdentifier>{4fa5cea4-a8a4-484c-954d-56a87447de53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -21,14 +30,35 @@
     <ClInclude Include="pch.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="PatchCreatorMain.hpp">
+    <ClInclude Include="ExternFunctions.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="common.hpp">
-      <Filter>Файлы заголовков</Filter>
+    <ClInclude Include="include\DBC.hpp">
+      <Filter>Файлы заголовков\include</Filter>
     </ClInclude>
-    <ClInclude Include="dbc.hpp">
-      <Filter>Файлы заголовков</Filter>
+    <ClInclude Include="include\MPQ.hpp">
+      <Filter>Файлы заголовков\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\structures\AllStructuresInclude.hpp">
+      <Filter>Файлы заголовков\include\structures</Filter>
+    </ClInclude>
+    <ClInclude Include="include\structures\DBCHeader.hpp">
+      <Filter>Файлы заголовков\include\structures</Filter>
+    </ClInclude>
+    <ClInclude Include="include\structures\dbc\ItemDisplayInfo.hpp">
+      <Filter>Файлы заголовков\include\structures\dbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\structures\dbc\Spell.hpp">
+      <Filter>Файлы заголовков\include\structures\dbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\structures\dbc\SpellItemEnchantment.hpp">
+      <Filter>Файлы заголовков\include\structures\dbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\structures\dbc\SpellVisualEffectName.hpp">
+      <Filter>Файлы заголовков\include\structures\dbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\structures\dbc\SpellVisualKit.hpp">
+      <Filter>Файлы заголовков\include\structures\dbc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -38,11 +68,24 @@
     <ClCompile Include="pch.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="PatchCreatorMain.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="StormLib.dll" />
+    <None Include="StormLib.dll">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="StormLibDUD.lib">
+      <Filter>Файлы ресурсов</Filter>
+    </Library>
+    <Library Include="StormLibRAD.lib">
+      <Filter>Файлы ресурсов</Filter>
+    </Library>
+    <Library Include="StormLibRAS.lib">
+      <Filter>Файлы ресурсов</Filter>
+    </Library>
+    <Library Include="StormLibRUD.lib">
+      <Filter>Файлы ресурсов</Filter>
+    </Library>
   </ItemGroup>
 </Project>
