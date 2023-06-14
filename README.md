@@ -35,7 +35,7 @@ struct SpellMapFromApp
 
 Change ItemDisplayInfo.dbc whit this structure
 ```cpp
-    struct ItemDisplayInfoMapFromApp
+struct ItemDisplayInfoMapFromApp
     {
         int id;
         int newspellVisualID;
@@ -47,7 +47,7 @@ Change ItemDisplayInfo.dbc whit this structure
 
 Change SpellItemEnchantment.dbc whit this structure
 ```cpp
-    struct SpellItemEnchantmentMapFromApp 
+struct SpellItemEnchantmentMapFromApp 
     {
         int id;
         int newitemVisuals;
@@ -59,7 +59,7 @@ Change SpellItemEnchantment.dbc whit this structure
 
 Change Spell.dbc whit this structure
 ```cpp
-    struct SpellVisualKitMapFromApp
+struct SpellVisualKitMapFromApp
     {
         int id;
         int newleftHandEffect;
