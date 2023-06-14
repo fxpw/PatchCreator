@@ -6,7 +6,7 @@
 #
 >bool ExtractSupportedDBCFromMPQ(const char* pathToFile)
 
-Extract DBC from MPQ Supported DBC(more in progress)
+Extract DBC from MPQ Supported DBC (more in progress)
 
 - List if Supported DBC
     - SpellVisualEffectName.dbc
