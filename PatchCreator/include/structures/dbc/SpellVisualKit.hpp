@@ -1,6 +1,5 @@
 #ifndef SpellVisualKit_HPP
 #define SpellVisualKit_HPP
-
 #include "../DBCHeader.hpp"
 struct SpellVisualKitRecord {
 	uint32_t ID;
@@ -59,6 +58,4 @@ struct SpellVisualKitFile {
 		return true;
 	};
 };
-
-
 #endif

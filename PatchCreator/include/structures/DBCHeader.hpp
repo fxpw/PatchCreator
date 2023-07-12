@@ -1,7 +1,6 @@
 #ifndef DBCHeader_HPP
 #define DBCHeader_HPP
 #include <string>
-#include <fstream>
 #include <cstring>
 #include <map>
 using stringref = uint32_t;
