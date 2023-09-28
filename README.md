@@ -57,7 +57,7 @@ struct SpellItemEnchantmentMapFromApp
 >bool ChangeSpellVisualKitDBC(SpellVisualKitMapFromApp * spellVisualKitMapFromApp)
 
 
-Change Spell.dbc whit this structure
+Change SpellVisualKit.dbc whit this structure
 ```cpp
 struct SpellVisualKitMapFromApp
     {
